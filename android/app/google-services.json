@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "249966798374",
+    "project_id": "messagesapk-c5194",
+    "storage_bucket": "messagesapk-c5194.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249966798374:android:49a91749c1ff7baf99a8e7",
+        "android_client_info": {
+          "package_name": "com.example.messages_apk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXv52Vou_t6Mw_El9dx0XkZ5LB0_DRKa4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
