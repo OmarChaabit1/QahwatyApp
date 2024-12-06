@@ -26,10 +26,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Column(
               children: [
                 Container(
-                  child: Image.asset('images/homePage.gif'),
+                  child: Image.asset('images/messageMe.png'),
                 ),
                 Text(
-                  'FindMe',
+                  'MessageMe',
                   style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w900,

@@ -62,43 +62,14 @@ class _chatScreenState extends State<chatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Row(
-          children: [
-            Image.asset(
-              'images/messageMe2.gif',
-              height: 80,
-            ),
-            Text(
-              'MessageMe',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              _auth.signOut();
-              Navigator.pop(context);
-              //Navigator.pushNamed(context,WelcomeScreen.screenRoute);
-            },
-            icon: Icon(
-              Icons.close,
-              color: Colors.white,
-              size: 38,
-            ),
-          ),
-        ],
-      ),
       body: SafeArea(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          SizedBox(
+            height: 10,
+          ),
           MessageStreamBuilder(),
           Container(
             decoration: BoxDecoration(

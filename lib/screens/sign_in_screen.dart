@@ -1,4 +1,4 @@
-import 'package:messages_apk/screens/dashboard_screen.dart';
+import 'package:messages_apk/screens/tabs_screen.dart';
 import 'package:messages_apk/widgets/my_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -126,7 +126,7 @@ class _signInScreenState extends State<signInScreen> {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     if (user != null) {
-                      Navigator.pushNamed(context, dashboardScreen.screenRoute);
+                      Navigator.pushNamed(context, TabsScreen.screenRoute);
                       setState(() {
                         showSpinner = false;
                       });
