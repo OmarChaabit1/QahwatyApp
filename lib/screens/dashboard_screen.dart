@@ -51,9 +51,9 @@ class _dashboardScreenState extends State<dashboardScreen>
         children: [
           TabBar(
             controller: _tabController,
-            labelColor: Colors.blue[800],
+            labelColor: Color.fromARGB(255, 164, 21, 192),
             unselectedLabelColor: Colors.black54,
-            indicatorColor: Colors.blue[800],
+            indicatorColor: Color.fromARGB(255, 164, 21, 192),
             isScrollable: true,
             tabs: const [
               Tab(text: 'Actua'),
@@ -125,7 +125,7 @@ class _dashboardScreenState extends State<dashboardScreen>
 
           return ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.blue[800],
+              backgroundColor: Color.fromARGB(255, 113, 8, 134),
               child: Text(
                 email[0].toUpperCase(),
                 style: const TextStyle(color: Colors.white),
@@ -133,7 +133,8 @@ class _dashboardScreenState extends State<dashboardScreen>
             ),
             title: Text(email),
             trailing: IconButton(
-              icon: const Icon(Icons.chat, color: Colors.blue),
+              icon: const Icon(Icons.chat,
+                  color: Color.fromARGB(255, 164, 21, 192)),
               onPressed: () {
                 Navigator.push(
                   context,

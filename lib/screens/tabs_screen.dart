@@ -34,7 +34,7 @@ class _TabsScreenState extends State<TabsScreen> {
       },
       {
         'Screen': chatScreen(
-          chatPartnerEmail: '',
+          chatPartnerEmail: '(You)',
         ),
         'Title': 'Messsages',
       },
