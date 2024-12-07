@@ -1,13 +1,15 @@
-import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:messages_apk/widgets/my_buttons.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class registrationScreen extends StatefulWidget {
   static const String screenRoute = 'registration_screen';
+
+  const registrationScreen({Key? key}) : super(key: key);
 
   @override
   _registrationScreenState createState() => _registrationScreenState();
@@ -15,45 +17,10 @@ class registrationScreen extends StatefulWidget {
 
 class _registrationScreenState extends State<registrationScreen> {
   final _auth = FirebaseAuth.instance;
-  final ImagePicker _picker = ImagePicker();
   late String email, password, fullName;
   bool showSpinner = false;
-  File? _imageFile;
 
-  Future<void> _pickImage() async {
-    try {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          _imageFile = File(pickedFile.path);
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("No image selected.")),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to pick image: $e")),
-      );
-    }
-  }
-
-  Future<String?> _uploadProfileImage(String userId) async {
-    if (_imageFile == null) return null;
-
-    try {
-      final storageRef =
-          FirebaseStorage.instance.ref().child('profile_images/$userId.jpg');
-      await storageRef.putFile(_imageFile!);
-      return await storageRef.getDownloadURL();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to upload image: $e")),
-      );
-      return null;
-    }
-  }
+  String? userId;
 
   @override
   Widget build(BuildContext context) {
@@ -67,84 +34,180 @@ class _registrationScreenState extends State<registrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _imageFile != null
-                      ? FileImage(_imageFile!)
-                      : AssetImage('images/messageMe.png') as ImageProvider,
-                ),
+              Column(
+                children: [
+                  Container(
+                    child: Image.asset('images/logo.gif'),
+                  ),
+                  SizedBox(height: 25),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      email = value;
+                    },
+                    validator: (value) {
+                      RegExp regex = new RegExp(r'^.{6,}$');
+                      if (value!.isEmpty) {
+                        return "Password cannot be empty";
+                      }
+                      if (!regex.hasMatch(value)) {
+                        return ("please enter valid password min. 6 character");
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Enter your email',
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blueGrey,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    obscureText: true,
+                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      password = value;
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Enter your password',
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blueGrey,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      fullName = value;
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Enter your fullName',
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blueGrey,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
-              TextField(
-                onChanged: (value) => email = value,
-                decoration: InputDecoration(hintText: "Enter your email"),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                onChanged: (value) => password = value,
-                obscureText: true,
-                decoration: InputDecoration(hintText: "Enter your password"),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                onChanged: (value) => fullName = value,
-                decoration: InputDecoration(hintText: "Enter your full name"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
+              MyButton(
+                color: Colors.blueGrey[900]!,
+                title: 'Register',
                 onPressed: () async {
-                  if (email.isEmpty ||
-                      password.isEmpty ||
-                      fullName.isEmpty ||
-                      _imageFile == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Please complete all fields.")),
-                    );
-                    return;
-                  }
-
-                  setState(() => showSpinner = true);
-
+                  setState(() {
+                    showSpinner = true;
+                  });
                   try {
-                    final userCredential =
-                        await _auth.createUserWithEmailAndPassword(
+                    final newUser = await _auth.createUserWithEmailAndPassword(
                       email: email,
                       password: password,
                     );
 
-                    final imageUrl =
-                        await _uploadProfileImage(userCredential.user!.uid);
+                    userId = _generateRandomUserId();
+                    await newUser.user!.updateDisplayName(fullName);
 
-                    if (imageUrl != null) {
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(userCredential.user!.uid)
-                          .set({
-                        'email': email,
-                        'fullName': fullName,
-                        'profileImageUrl': imageUrl,
-                      });
-                      Navigator.pushReplacementNamed(
-                          context, 'signInScreen'); // Replace with your route
-                    } else {
-                      throw "Image upload failed.";
-                    }
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(newUser.user!.uid)
+                        .set({
+                      'email': email,
+                      'userId': userId,
+                      'fullName': fullName,
+                      // 'role': role,
+                    });
+
+                    Navigator.pushReplacementNamed(context, 'signInScreen');
+                    setState(() {
+                      showSpinner = false;
+                    });
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Registration failed: $e")),
-                    );
-                  } finally {
-                    setState(() => showSpinner = false);
+                    print(e);
                   }
                 },
-                child: Text("Register"),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  String _generateRandomUserId() {
+    final Random random = Random();
+    String result = '';
+    for (int i = 0; i < 6; i++) {
+      result += random.nextInt(10).toString();
+    }
+    return result;
   }
 }

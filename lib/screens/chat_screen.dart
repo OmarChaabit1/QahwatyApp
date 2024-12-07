@@ -1,32 +1,30 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-// import 'package:message_me/screens/Welcome_screen.dart';
-// import 'package:message_me/widgets/my_buttons.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class chatScreen extends StatefulWidget {
   static const String screenRoute = 'chat_screen';
-  const chatScreen({super.key});
+  final String chatPartnerEmail;
+
+  const chatScreen({super.key, required this.chatPartnerEmail});
 
   @override
-  _chatScreenState createState() => _chatScreenState();
+  cChatScreenState createState() => cChatScreenState();
 }
 
-late User signedInUser; //this will give us the email
-
-final _firestore = FirebaseFirestore.instance;
-
-class _chatScreenState extends State<chatScreen> {
+class cChatScreenState extends State<chatScreen> {
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   final messageTextController = TextEditingController();
+  late User signedInUser;
+  String? messageText;
 
-  // the messages :
-  String? messageText; //this will give us the message
-  // end messages
+  String getChatId() {
+    final emails = [signedInUser.email, widget.chatPartnerEmail];
+    emails.sort(); // Sort emails alphabetically to ensure consistency
+    return emails.join('_');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,183 +36,143 @@ class _chatScreenState extends State<chatScreen> {
       final user = _auth.currentUser;
       if (user != null) {
         signedInUser = user;
-        print(signedInUser.email);
       }
     } catch (e) {
       print(e);
     }
   }
 
-  // void getMessagesDB() async {
-  //   final messages = await _firestore.collection('messages').get();
-  //   for (var message in messages.docs) {
-  //     print(message.data());
-  //   }
-  // }
-  // void messagesStream() async {
-  //   await for (var snapshot in _firestore.collection('messages').snapshots()) {
-  //     for (var message in snapshot.docs) {
-  //       print(message.data());
-  //     }
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.chatPartnerEmail),
+        backgroundColor: Colors.blue[800],
+      ),
       body: SafeArea(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          MessageStreamBuilder(),
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: Colors.blue,
-                  width: 2,
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: MessageStreamBuilder(chatId: getChatId()),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.blue, width: 2)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: messageTextController,
+                      onChanged: (value) {
+                        messageText = value;
+                      },
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        hintText: 'Write your message here...',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (messageText == null || messageText!.trim().isEmpty) {
+                        return;
+                      }
+                      messageTextController.clear();
+                      _firestore
+                          .collection('messages')
+                          .doc(getChatId())
+                          .collection('chats')
+                          .add({
+                        'text': messageText,
+                        'sender': signedInUser.email,
+                        'receiver': widget.chatPartnerEmail,
+                        'time': FieldValue.serverTimestamp(),
+                      });
+                    },
+                    child: Text(
+                      'Send',
+                      style: TextStyle(
+                          color: Colors.blue[800],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: messageTextController,
-                    onChanged: (value) {
-                      messageText = value;
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 20,
-                      ),
-                      hintText: 'Write your message here...',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    messageTextController.clear();
-                    _firestore.collection('messages').add({
-                      'text': messageText,
-                      'sender': signedInUser.email,
-                      'time': FieldValue.serverTimestamp(),
-                    });
-                  },
-                  child: Text(
-                    'Send',
-                    style: TextStyle(
-                      color: Colors.blue[800],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      )),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class MessageStreamBuilder extends StatelessWidget {
-  const MessageStreamBuilder({super.key});
+  final String chatId;
+
+  const MessageStreamBuilder({super.key, required this.chatId});
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('messages').orderBy('time').snapshots(),
-      builder: (context, snapshot) {
-        List<messageLine> messageWidgets = [];
+    final _firestore = FirebaseFirestore.instance;
+    final currentUser = FirebaseAuth.instance.currentUser?.email;
 
-        // si on a des data dans BD
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore
+          .collection('messages')
+          .doc(chatId)
+          .collection('chats')
+          .orderBy('time', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.blue,
-            ),
-          );
+          return Center(child: CircularProgressIndicator());
         }
         final messages = snapshot.data!.docs;
-        for (var message in messages) {
-          final messageText = message.get('text');
-          final messageSender = message.get('sender');
-          final currentUser = signedInUser.email;
-          if (currentUser == messageSender) {
-            // the code of the message from the signed in user
-          }
-          final messageWidget = messageLine(
-            sender: messageSender,
-            text: messageText,
-            isMe: currentUser == messageSender,
-          );
-          messageWidgets.add(messageWidget);
-        }
-        return Expanded(
-          child: ListView(
-            padding: EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20,
-            ),
-            children: messageWidgets,
-          ),
-        );
+
+        List<MessageBubble> messageWidgets = messages.map((message) {
+          final messageText = message['text'];
+          final messageSender = message['sender'];
+          final isMe = messageSender == currentUser;
+
+          return MessageBubble(text: messageText, isMe: isMe);
+        }).toList();
+
+        return ListView(reverse: true, children: messageWidgets);
       },
     );
   }
 }
 
-class messageLine extends StatelessWidget {
-  const messageLine({this.text, this.sender, required this.isMe, Key? key})
-      : super(key: key);
-  final String? sender;
-  final String? text;
+class MessageBubble extends StatelessWidget {
+  final String text;
   final bool isMe;
+
+  const MessageBubble({super.key, required this.text, required this.isMe});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Text(
-            '$sender',
-            style: TextStyle(
-              color: Colors.black45,
-              fontSize: 12,
-            ),
-          ),
           Material(
+            borderRadius: BorderRadius.circular(10),
             elevation: 5,
-            borderRadius: isMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  )
-                : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-            color: isMe ? Colors.blue[800] : Colors.grey[800],
+            color: isMe ? Colors.blue[800] : Colors.grey[300],
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Text(
-                '$text',
+                text,
                 style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.white,
-                ),
+                    color: isMe ? Colors.white : Colors.black54, fontSize: 15),
               ),
             ),
           ),

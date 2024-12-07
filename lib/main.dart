@@ -42,7 +42,9 @@ class MyApp extends StatelessWidget {
         WelcomeScreen.screenRoute: (context) => WelcomeScreen(),
         signInScreen.screenRoute: (context) => signInScreen(),
         registrationScreen.screenRoute: (context) => registrationScreen(),
-        chatScreen.screenRoute: (context) => chatScreen(),
+        chatScreen.screenRoute: (context) => chatScreen(
+              chatPartnerEmail: '',
+            ),
         dashboardScreen.screenRoute: (context) => dashboardScreen(),
         // googleMapScreen.screenRoute: (context) => googleMapScreen(),
         // flutterApi.screenRoute: (context) => flutterApi(),

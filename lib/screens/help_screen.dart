@@ -41,11 +41,6 @@ class HelpScreen extends StatelessWidget {
               'sélectionnez l\'icône "Create A Circle" dans la barre de navigation '
               'et saisissez le code pour rejoindre un cercle existant.',
             ),
-            Text(
-              '3. Gérer les cercles familiaux : Une fois que vous avez rejoint ou créé des '
-              'cercles familiaux, vous pouvez gérer les membres et les paramètres de chaque cercle '
-              'en accédant à l\'option "My Circles" dans la barre de navigation.',
-            ),
             SizedBox(height: 20.0),
             Text(
               'FAQ (Foire Aux Questions) :',
