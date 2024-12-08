@@ -16,8 +16,8 @@ class AppDrawer extends StatelessWidget {
       leading: Icon(
         icon,
         size: 30,
-        color: Theme.of(context)
-            .primaryColor, // Utilisation de la couleur principale du thème
+        color: Color.fromARGB(
+            255, 113, 8, 134), // Utilisation de la couleur principale du thème
       ),
       title: Text(
         title,
@@ -65,7 +65,7 @@ class AppDrawer extends StatelessWidget {
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.asset(
-                  'images/profile.png',
+                  'images/download.png',
                   width: 90,
                   height: 90,
                   fit: BoxFit.cover,
@@ -73,8 +73,8 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             decoration: BoxDecoration(
-              color:
-                  Theme.of(context).primaryColor, // Couleur principale du thème
+              color: Color.fromARGB(
+                  255, 113, 8, 134), // Couleur principale du thème
             ),
           ),
           SizedBox(height: 20),
@@ -82,6 +82,7 @@ class AppDrawer extends StatelessWidget {
             context, // Ajout du context ici
             'Home',
             Icons.home,
+
             () {
               Navigator.of(context)
                   .pushReplacementNamed(TabsScreen.screenRoute);

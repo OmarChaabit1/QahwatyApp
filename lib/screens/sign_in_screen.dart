@@ -38,7 +38,11 @@ class _signInScreenState extends State<signInScreen> {
               Column(
                 children: [
                   Container(
-                    child: Image.asset('images/homePage.gif'),
+                    child: Image.asset(
+                      'images/logo.png',
+                      width: 250,
+                      height: 250,
+                    ),
                   ),
                   SizedBox(height: 50),
                   TextField(
@@ -67,7 +71,7 @@ class _signInScreenState extends State<signInScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 113, 8, 134),
                           width: 2,
                         ),
                         borderRadius: BorderRadius.all(
@@ -103,7 +107,7 @@ class _signInScreenState extends State<signInScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 113, 8, 134),
                           width: 2,
                         ),
                         borderRadius: BorderRadius.all(
@@ -116,7 +120,7 @@ class _signInScreenState extends State<signInScreen> {
               ),
               SizedBox(height: 20),
               MyButton(
-                color: Colors.blue[900]!,
+                color: Color.fromARGB(255, 113, 8, 134)!,
                 title: 'Sign in',
                 onPressed: () async {
                   setState(() {

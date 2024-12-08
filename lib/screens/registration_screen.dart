@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:messages_apk/screens/sign_in_screen.dart';
 import 'package:messages_apk/widgets/my_buttons.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,7 +38,11 @@ class _registrationScreenState extends State<registrationScreen> {
               Column(
                 children: [
                   Container(
-                    child: Image.asset('images/logo.gif'),
+                    child: Image.asset(
+                      'images/logo.png',
+                      width: 250,
+                      height: 250,
+                    ),
                   ),
                   SizedBox(height: 25),
                   TextFormField(
@@ -77,7 +82,7 @@ class _registrationScreenState extends State<registrationScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 113, 8, 134),
                           width: 2,
                         ),
                         borderRadius: BorderRadius.all(
@@ -113,7 +118,7 @@ class _registrationScreenState extends State<registrationScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 113, 8, 134),
                           width: 2,
                         ),
                         borderRadius: BorderRadius.all(
@@ -148,7 +153,7 @@ class _registrationScreenState extends State<registrationScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 113, 8, 134),
                           width: 2,
                         ),
                         borderRadius: BorderRadius.all(
@@ -186,7 +191,8 @@ class _registrationScreenState extends State<registrationScreen> {
                       // 'role': role,
                     });
 
-                    Navigator.pushReplacementNamed(context, 'signInScreen');
+                    Navigator.pushReplacementNamed(
+                        context, signInScreen.screenRoute);
                     setState(() {
                       showSpinner = false;
                     });

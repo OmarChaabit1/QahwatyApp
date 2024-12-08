@@ -26,20 +26,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Column(
               children: [
                 Container(
-                  child: Image.asset('images/messageMe.png'),
+                  child: Image.asset('images/logo.png'),
                 ),
                 Text(
                   'MessageMe',
                   style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w900,
-                      color: Color.fromARGB(255, 21, 105, 252)),
+                      color: Color.fromARGB(255, 113, 8, 134)),
                 )
               ],
             ),
             SizedBox(height: 30),
             MyButton(
-              color: Colors.blue[900]!,
+              color: Color.fromARGB(255, 113, 8, 134)!,
               title: 'Sign in',
               onPressed: () {
                 Navigator.pushNamed(context, signInScreen.screenRoute);

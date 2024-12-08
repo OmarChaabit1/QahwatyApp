@@ -95,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         } else {
                           return Image.asset(
-                            'images/profile.png', // Default image if no image is found
+                            'images/download.png', // Default image if no image is found
                             width: 90,
                             height: 90,
                             fit: BoxFit.cover,
@@ -128,8 +128,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context, UpdateProfileScreen.screenRoute);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context)
-                        .primaryColor, // Utilisation de la couleur principale du thème
+                    backgroundColor: Color.fromARGB(255, 113, 8,
+                        134), // Utilisation de la couleur principale du thème
                     side: BorderSide.none,
                     shape: const StadiumBorder(),
                   ),
@@ -144,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              Divider(color: Theme.of(context).primaryColor.withOpacity(0.1)),
+              Divider(color: Color.fromARGB(255, 113, 8, 134).withOpacity(0.2)),
               SizedBox(height: 20),
               profileMenuWidget(
                   title: 'Settings',
@@ -158,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'User Management',
                   icon: LineAwesomeIcons.user_check_solid,
                   onPress: () {}),
-              Divider(color: Theme.of(context).primaryColor.withOpacity(0.1)),
+              Divider(color: Color.fromARGB(255, 113, 8, 134).withOpacity(0.1)),
               const SizedBox(height: 10),
               profileMenuWidget(
                   title: 'Information',
@@ -206,7 +206,7 @@ class profileMenuWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: Theme.of(context).primaryColor.withOpacity(
+          color: Color.fromARGB(255, 113, 8, 134).withOpacity(
               0.1), // Utilisation de la couleur principale du thème avec opacité
         ),
         child: Icon(

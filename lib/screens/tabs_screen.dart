@@ -5,9 +5,7 @@ import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/dashboard_screen.dart';
 import 'package:messages_apk/widgets%20copy/app_drawer.dart';
 
-// import 'dart:core';
 class TabsScreen extends StatefulWidget {
-  // const TabsScreen({super.key});
   static const String screenRoute = 'tabs_screen';
 
   @override
@@ -15,12 +13,6 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  void _selectScreen(int index) {
-    setState(() {
-      _selectedScreenIndex = index;
-    });
-  }
-
   int _selectedScreenIndex = 0;
 
   late List<Map<String, Object>> _screens;
@@ -29,14 +21,12 @@ class _TabsScreenState extends State<TabsScreen> {
   void initState() {
     _screens = [
       {
-        'Screen': dashboardScreen(),
+        'Screen': const dashboardScreen(),
         'Title': 'Home',
       },
       {
-        'Screen': chatScreen(
-          chatPartnerEmail: '(You)',
-        ),
-        'Title': 'Messsages',
+        'Screen': const chatScreen(chatPartnerEmail: ''),
+        'Title': 'Messages',
       },
       {
         'Screen':
@@ -46,16 +36,12 @@ class _TabsScreenState extends State<TabsScreen> {
     ];
     super.initState();
   }
-  // final List<Map<String, Object>> _screens = [
-  //   {
-  //     'Screen': CategoriesScreen(),
-  //     'Title': 'Workout Categories',
-  //   },
-  //   {
-  //     'Screen': FavoritesScreen(widget.favoriteWorkouts),
-  //     'Title': 'Favorite Workouts',
-  //   },
-  // ];
+
+  void _selectScreen(int index) {
+    setState(() {
+      _selectedScreenIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +53,18 @@ class _TabsScreenState extends State<TabsScreen> {
       body: _screens[_selectedScreenIndex]['Screen'] as Widget,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectScreen,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: const Color.fromARGB(255, 113, 8, 134),
         selectedItemColor: Colors.yellow,
         unselectedItemColor: Colors.white,
         currentIndex: _selectedScreenIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
-            label: 'Messages',
+            label: 'Saved Messages',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

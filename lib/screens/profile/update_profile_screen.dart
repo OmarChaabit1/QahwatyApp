@@ -87,7 +87,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               child: CircleAvatar(
                 child: ClipOval(
                   child: Image.asset(
-                    'images/profile.png', // Vérifiez le chemin exact
+                    'images/download.png', // Vérifiez le chemin exact
                     width: 90,
                     height: 90,
                     fit: BoxFit
