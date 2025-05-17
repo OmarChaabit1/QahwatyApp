@@ -1,5 +1,5 @@
 import 'package:messages_apk/screens/Welcome_screen.dart';
-import 'package:messages_apk/screens/help_screen.dart';
+import 'package:messages_apk/screens/profile/help_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,7 +82,15 @@ class AppDrawer extends StatelessWidget {
             context, // Ajout du context ici
             'Home',
             Icons.home,
-
+            () {
+              Navigator.of(context)
+                  .pushReplacementNamed(TabsScreen.screenRoute);
+            },
+          ),
+          buildListTile(
+            context, // Ajout du context ici
+            'Dashboard',
+            Icons.dashboard,
             () {
               Navigator.of(context)
                   .pushReplacementNamed(TabsScreen.screenRoute);

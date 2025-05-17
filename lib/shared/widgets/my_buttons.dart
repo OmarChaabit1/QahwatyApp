@@ -5,7 +5,7 @@ class MyButton extends StatefulWidget {
     Key? key,
     required this.title,
     required this.onPressed,
-    required this.gradientColors, // Add gradient colors as parameter
+    required this.gradientColors, required Color color, // Add gradient colors as parameter
   }) : super(key: key);
 
   final String title;

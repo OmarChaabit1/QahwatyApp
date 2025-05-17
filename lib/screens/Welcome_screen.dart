@@ -1,5 +1,8 @@
+import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
+import 'package:messages_apk/screens/passwordProcess/set_new_password.dart';
 import 'package:messages_apk/screens/sign_in_screen.dart';
 import 'package:messages_apk/screens/registration_screen.dart';
+import 'package:messages_apk/screens/passwordProcess/verification_code.dart';
 import 'package:messages_apk/widgets/my_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -28,13 +31,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Container(
                   child: Image.asset('images/logo.png'),
                 ),
-                Text(
-                  'MessageMe',
-                  style: TextStyle(
+                Text('Qahwaty',
+                    style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w900,
-                      color: Color.fromARGB(255, 113, 8, 134)),
-                )
+                      color: Colors.brown[800],
+                    )),
               ],
             ),
             SizedBox(height: 30),
@@ -45,11 +47,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Navigator.pushNamed(context, signInScreen.screenRoute);
               },
             ),
+            // MyButton(
+            //   color: Colors.blueGrey[800]!,
+            //   title: 'Register',
+            //   onPressed: () {
+            //     Navigator.pushNamed(context, registrationScreen.screenRoute);
+            //   },
+            // ),
             MyButton(
               color: Colors.blueGrey[800]!,
-              title: 'Register',
+              title: 'forgot password',
               onPressed: () {
-                Navigator.pushNamed(context, registrationScreen.screenRoute);
+                Navigator.pushNamed(context, ForgotPasswordScreen.screenRoute);
+              },
+            ),
+            MyButton(
+              color: Colors.blueGrey[800]!,
+              title: 'verification code',
+              onPressed: () {
+                Navigator.pushNamed(
+                    context, VerificationCodeScreen.screenRoute);
+              },
+            ),
+            MyButton(
+              color: Colors.blueGrey[800]!,
+              title: 'set new password',
+              onPressed: () {
+                Navigator.pushNamed(context, NewPasswordScreen.screenRoute);
               },
             ),
           ],

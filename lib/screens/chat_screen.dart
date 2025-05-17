@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class chatScreen extends StatefulWidget {
   static const String screenRoute = 'chat_screen';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:messages_apk/screens/Home_screen.dart';
 import 'chat_screen.dart';
 
 class dashboardScreen extends StatefulWidget {
@@ -574,8 +575,7 @@ class _dashboardScreenState extends State<dashboardScreen>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              chatScreen(chatPartnerEmail: email),
+                          builder: (context) => HomeScreen(),
                         ),
                       );
                     },
