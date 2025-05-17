@@ -46,22 +46,22 @@ class _chatScreenState extends State<chatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 113, 8, 134),
-        toolbarHeight: 70,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(LineAwesomeIcons.angle_left_solid,
-              color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.chatPartnerEmail,
-          style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: const Color.fromARGB(255, 113, 8, 134),
+      //   toolbarHeight: 70,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: const Icon(LineAwesomeIcons.angle_left_solid,
+      //         color: Colors.white),
+      //     onPressed: () => Navigator.pop(context),
+      //   ),
+      //   title: Text(
+      //     widget.chatPartnerEmail,
+      //     style: const TextStyle(
+      //         fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+      //   ),
+      //   centerTitle: true,
+      // ),
       body: SafeArea(
         child: Column(
           children: [
