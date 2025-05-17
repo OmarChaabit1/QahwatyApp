@@ -26,67 +26,70 @@ class ThankYouScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Column(
-        children: [
-          // --------------- Logo -----------------
-          Image.asset('images/logo.png', height: 170),
-          // --------------- Curved separator -----
-          ClipPath(
-            clipper: _CurveClipper(),
-            child: Container(
-              color: Colors.white,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 24),
-              child: Column(
-                children: [
-                  // ✅ checkmark
-                  CircleAvatar(
-                    radius: 45,
-                    backgroundColor: kGreen,
-                    child:
-                        const Icon(Icons.check, size: 60, color: Colors.white),
-                  ),
-                  const SizedBox(height: 25),
-                  // Text block --------------
-                  const Text(
-                    'Thank you\nFor Your Order',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Times New Roman',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 28,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // --------------- Logo -----------------
+            Image.asset('images/logo.png', height: 170),
+            // --------------- Curved separator -----
+            ClipPath(
+              clipper: _CurveClipper(),
+              child: Container(
+                color: Colors.white,
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 25, horizontal: 24),
+                child: Column(
+                  children: [
+                    // ✅ checkmark
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundColor: kGreen,
+                      child: const Icon(Icons.check,
+                          size: 60, color: Colors.white),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'We Will Call You Soon To\nConfirm Your Order',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Comic Neue', // playful handwritten font
-                      fontSize: 18,
+                    const SizedBox(height: 15),
+                    // Text block --------------
+                    const Text(
+                      'Thank you\nFor Your Order',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Times New Roman',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 28,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 35),
-                  // Guarantees -------------
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _Guarantee(
-                        icon: Icons.thumb_up,
-                        title: '100%\nGuarantee',
+                    const SizedBox(height: 5),
+                    const Text(
+                      'We Will Call You Soon To\nConfirm Your Order',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Comic Neue', // playful handwritten font
+                        fontSize: 18,
                       ),
-                      Container(width: 1, height: 60, color: Colors.black26),
-                      _Guarantee(
-                        icon: Icons.account_balance_wallet_outlined,
-                        title: 'Affordable\nPrice',
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 15),
+                    // Guarantees -------------
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _Guarantee(
+                          icon: Icons.thumb_up,
+                          title: '100%\nGuarantee',
+                        ),
+                        Container(width: 1, height: 60, color: Colors.black26),
+                        _Guarantee(
+                          icon: Icons.account_balance_wallet_outlined,
+                          title: 'Affordable\nPrice',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       // --------------- Bottom bar --------------
 
