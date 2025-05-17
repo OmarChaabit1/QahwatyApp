@@ -18,7 +18,7 @@ class AppDrawer extends StatelessWidget {
         icon,
         size: 30,
         color: Color.fromARGB(
-            255, 113, 8, 134), // Utilisation de la couleur principale du thème
+            255, 177, 127, 52), // Utilisation de la couleur principale du thème
       ),
       title: Text(
         title,
@@ -75,7 +75,7 @@ class AppDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: Color.fromARGB(
-                  255, 113, 8, 134), // Couleur principale du thème
+                  255, 177, 127, 52), // Couleur principale du thème
             ),
           ),
           SizedBox(height: 20),
@@ -97,7 +97,7 @@ class AppDrawer extends StatelessWidget {
                   .pushReplacementNamed(TabsScreen.screenRoute);
             },
           ),
-           buildListTile(
+          buildListTile(
             context, // Ajout du context ici
             'Notifications',
             Icons.home,
