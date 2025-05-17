@@ -1,7 +1,7 @@
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
 import 'package:messages_apk/screens/passwordProcess/set_new_password.dart';
-import 'package:messages_apk/screens/sign_in_screen.dart';
-import 'package:messages_apk/screens/registration_screen.dart';
+import 'package:messages_apk/screens/auth/sign_in_screen.dart';
+import 'package:messages_apk/screens/auth/registration_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/verification_code.dart';
 import 'package:messages_apk/widgets/my_buttons.dart';
 import 'package:flutter/material.dart';

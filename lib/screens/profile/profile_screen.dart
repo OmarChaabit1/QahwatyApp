@@ -1,23 +1,23 @@
+// -------------  profile_screen.dart -------------
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:messages_apk/screens/profile/update_profile_screen.dart';
-import 'package:messages_apk/screens/Welcome_screen.dart';
+import 'package:messages_apk/screens/auth/Welcome_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String screenRoute = 'profile_screen';
   final User currentUser;
-
-  ProfileScreen({Key? key, required this.currentUser}) : super(key: key);
+  const ProfileScreen({super.key, required this.currentUser});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late User currentUser;
-  bool showAppBar = false; // Default to no AppBar
+  bool showAppBar = false;
 
   @override
   void initState() {
@@ -27,153 +27,150 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<String?> fetchProfileImage() async {
     try {
-      final ref = FirebaseStorage.instance.ref(
-          'profile_images/${currentUser.uid}.jpg'); // Update the path as per your storage structure
+      final ref =
+          FirebaseStorage.instance.ref('profile_images/${currentUser.uid}.jpg');
       return await ref.getDownloadURL();
-    } catch (e) {
-      print('Error fetching profile image: $e');
-      return null; // Return null if there's an error
+    } catch (_) {
+      return null;
     }
   }
 
+  // ---------- COLORS used in the mock-up ----------
+  final Color kBg = const Color(0xFFF0DDC9); // beige background
+  final Color kIcon = const Color(0xFF333333); // dark icons
+  final Color kText = const Color(0xFF1F1F1F); // dark text
+  // ------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
-    // Get the argument to decide if AppBar should be shown
-    final bool? shouldShowAppBar =
-        ModalRoute.of(context)?.settings.arguments as bool?;
-
-    showAppBar = shouldShowAppBar ?? false;
-
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    var iconColor = isDark ? Colors.black : Colors.white;
+    // allow optional AppBar only when pushed from another screen
+    showAppBar = (ModalRoute.of(context)?.settings.arguments as bool?) ?? false;
 
     return Scaffold(
+      backgroundColor: kBg,
       appBar: showAppBar
           ? AppBar(
-              title: Text(
-                'Profile',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
+              backgroundColor: kBg,
+              elevation: 0,
               leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(LineAwesomeIcons.angle_left_solid),
+                icon: const Icon(Icons.arrow_back_ios_new),
+                color: kIcon,
+                onPressed: () => Navigator.pop(context),
               ),
               actions: [
                 IconButton(
+                  icon: const Icon(Icons.search, color: Colors.black87),
                   onPressed: () {},
-                  icon: Icon(
-                      isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon),
                 ),
               ],
             )
-          : null, // Show AppBar only if showAppBar is true
+          : null,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                width: 120,
-                height: 120,
-                child: CircleAvatar(
-                  child: ClipOval(
-                    child: FutureBuilder<String?>(
-                      future: fetchProfileImage(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator(); // Show loading indicator
-                        } else if (snapshot.hasData && snapshot.data != null) {
-                          return Image.network(
-                            snapshot.data!,
-                            width: 90,
-                            height: 90,
-                            fit: BoxFit.cover,
-                          );
-                        } else {
-                          return Image.asset(
-                            'images/download.png', // Default image if no image is found
-                            width: 90,
-                            height: 90,
-                            fit: BoxFit.cover,
-                          );
-                        }
-                      },
-                    ),
+              // -------- avatar ----------
+              const SizedBox(height: 12),
+              CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.white,
+                child: ClipOval(
+                  child: FutureBuilder<String?>(
+                    future: fetchProfileImage(),
+                    builder: (_, snap) {
+                      if (snap.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      final img = snap.data;
+                      return Image(
+                        image: img != null
+                            ? NetworkImage(img)
+                            : const AssetImage('images/download.png')
+                                as ImageProvider,
+                        width: 110,
+                        height: 110,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
-                currentUser.displayName ?? 'N/A',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Email: ${currentUser.email ?? 'N/A'}',
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 200,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                        context, UpdateProfileScreen.screenRoute);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 113, 8,
-                        134), // Utilisation de la couleur principale du thème
-                    side: BorderSide.none,
-                    shape: const StadiumBorder(),
-                  ),
-                  child: Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onPrimary, // Couleur du texte sur le bouton
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Divider(color: Color.fromARGB(255, 113, 8, 134).withOpacity(0.2)),
-              SizedBox(height: 20),
-              profileMenuWidget(
-                  title: 'Settings',
-                  icon: LineAwesomeIcons.cog_solid,
-                  onPress: () {}),
-              profileMenuWidget(
-                  title: 'Billing Details',
-                  icon: LineAwesomeIcons.wallet_solid,
-                  onPress: () {}),
-              profileMenuWidget(
-                  title: 'User Management',
-                  icon: LineAwesomeIcons.user_check_solid,
-                  onPress: () {}),
-              Divider(color: Color.fromARGB(255, 113, 8, 134).withOpacity(0.1)),
               const SizedBox(height: 10),
-              profileMenuWidget(
-                  title: 'Information',
-                  icon: LineAwesomeIcons.info_solid,
-                  onPress: () {}),
-              profileMenuWidget(
-                  title: 'Log-Out',
-                  icon: LineAwesomeIcons.sign_out_alt_solid,
-                  textColor: Colors.red,
-                  endIcon: false,
-                  onPress: () {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacementNamed(
-                        context, WelcomeScreen.screenRoute);
-                  }),
+              // -------- name ----------
+              Text(
+                currentUser.displayName ?? 'User',
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87),
+              ),
+              const SizedBox(height: 25),
+
+              // -------- Edit profile row ----------
+              _ProfileRow(
+                title: 'Edit profile',
+                icon: Icons.edit,
+                iconColor: Colors.green,
+                onTap: () => Navigator.pushNamed(
+                    context, UpdateProfileScreen.screenRoute),
+              ),
+
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('General Settings',
+                    style: TextStyle(
+                        color: kText,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16)),
+              ),
+              const SizedBox(height: 6),
+
+              _ProfileRow(
+                  title: 'Language',
+                  icon: Icons.language,
+                  iconColor: Colors.orange,
+                  onTap: () {}),
+              _ProfileRow(
+                  title: 'About',
+                  icon: Icons.help_outline,
+                  iconColor: Colors.purple.shade300,
+                  onTap: () {}),
+              _ProfileRow(
+                  title: 'Terms & Conditions',
+                  icon: Icons.info,
+                  iconColor: Colors.blue,
+                  onTap: () {}),
+              _ProfileRow(
+                  title: 'Privacy Policy',
+                  icon: Icons.lock_outline,
+                  iconColor: Colors.red,
+                  onTap: () {}),
+              _ProfileRow(
+                  title: 'Rate This App',
+                  icon: Icons.star_border,
+                  iconColor: Colors.deepPurple,
+                  onTap: () {}),
+              _ProfileRow(
+                  title: 'Share This App',
+                  icon: Icons.share_outlined,
+                  iconColor: Colors.pink,
+                  onTap: () {}),
+
+              const SizedBox(height: 12),
+              // -------- Logout -----------
+              _ProfileRow(
+                title: 'Log-out',
+                icon: Icons.logout,
+                iconColor: Colors.red,
+                onTap: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacementNamed(
+                      context, WelcomeScreen.screenRoute);
+                },
+              ),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -182,55 +179,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class profileMenuWidget extends StatelessWidget {
-  const profileMenuWidget({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.onPress,
-    this.endIcon = true,
-    this.textColor,
-  });
+// =============== reusable row widget ===============
+class _ProfileRow extends StatelessWidget {
   final String title;
   final IconData icon;
-  final VoidCallback onPress;
-  final bool endIcon;
-  final Color? textColor;
+  final Color iconColor;
+  final VoidCallback onTap;
+
+  const _ProfileRow(
+      {required this.title,
+      required this.icon,
+      required this.iconColor,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: onPress,
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: Color.fromARGB(255, 113, 8, 134).withOpacity(
-              0.1), // Utilisation de la couleur principale du thème avec opacité
-        ),
-        child: Icon(
-          icon,
-          color: Theme.of(context)
-              .primaryColor, // Utilisation de la couleur principale du thème
-        ),
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: iconColor.withOpacity(.15),
+        child: Icon(icon, color: iconColor, size: 22),
       ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.apply(
-            color: textColor ?? Theme.of(context).colorScheme.onBackground),
-      ),
-      trailing: endIcon
-          ? Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Colors.grey.withOpacity(0.1),
-              ),
-              child: const Icon(LineAwesomeIcons.angle_right_solid,
-                  size: 18, color: Colors.grey))
-          : null,
+      title: Text(title,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }

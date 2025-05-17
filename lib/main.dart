@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
 import 'package:messages_apk/screens/passwordProcess/get_started_screen.dart';
 import 'package:messages_apk/screens/profile/help_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/profile/update_profile_screen.dart';
 import 'package:messages_apk/screens/dashboard_screen.dart';
-import 'package:messages_apk/screens/registration_screen.dart';
+import 'package:messages_apk/screens/auth/registration_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/set_new_password.dart';
-import 'package:messages_apk/screens/sign_in_screen.dart';
+import 'package:messages_apk/screens/auth/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/verification_code.dart';
-import 'screens/Welcome_screen.dart';
+import 'screens/auth/Welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -58,12 +59,17 @@ class MyApp extends StatelessWidget {
         //       chatPartnerEmail: '',
         //     ),
         dashboardScreen.screenRoute: (context) => dashboardScreen(),
-        // verification code
+
+        // ========== notification process ==============
+        NotificationScreen.screenRoute: (context) => NotificationScreen(),
+
+        // ========== password process ==============
         VerificationCodeScreen.screenRoute: (context) =>
             VerificationCodeScreen(),
         ForgotPasswordScreen.screenRoute: (context) => ForgotPasswordScreen(),
         NewPasswordScreen.screenRoute: (context) => NewPasswordScreen(),
-        // profile
+
+        // ========= profile process =============
         ProfileScreen.screenRoute: (context) =>
             ProfileScreen(currentUser: FirebaseAuth.instance.currentUser!),
         UpdateProfileScreen.screenRoute: (context) => UpdateProfileScreen(

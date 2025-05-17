@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/Home_screen.dart';
+import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/dashboard_screen.dart';
+import 'package:messages_apk/screens/thank_you_screen.dart';
 import 'package:messages_apk/widgets copy/app_drawer.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -24,12 +26,20 @@ class _TabsScreenState extends State<TabsScreen> {
         'Screen': HomeScreen(),
         'Title': 'Home',
       },
+      {
+        'Screen': NotificationScreen(),
+        'Title': 'Notifications',
+      },
       // {
       //   'Screen': const dashboardScreen(),
       //   'Title': 'Dashboard',
       // },
       {
-        'Screen': const Placeholder(), // WhatsApp button placeholder
+        'Screen': ThankYouScreen(),
+        'Title': 'Thank You',
+      },
+      {
+        'Screen': Placeholder(), // WhatsApp button placeholder
         'Title': 'WhatsApp',
       },
       {
@@ -42,7 +52,7 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 
   void _selectScreen(int index) {
-    if (index == 1) {
+    if (index == 3) {
       // Open WhatsApp or handle action
       // For now, just skip updating the screen
       print('WhatsApp button pressed');
@@ -65,7 +75,7 @@ class _TabsScreenState extends State<TabsScreen> {
       // Floating WhatsApp Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _selectScreen(1);
+          _selectScreen(3);
         },
         backgroundColor: Colors.green,
         child: Icon(Icons.whatshot_sharp, size: 30),
@@ -92,28 +102,34 @@ class _TabsScreenState extends State<TabsScreen> {
                 onPressed: () => _selectScreen(0),
               ),
               IconButton(
-                icon: const Icon(Icons.notifications_none, color: Colors.grey),
-                iconSize: 32,
+                icon: Icon(
+                  Icons.notifications_none,
+                  size: 32,
+                  color: _selectedScreenIndex == 1 ? Colors.black : Colors.grey,
+                ),
                 onPressed: () {
-                  // Optional: notifications functionality
+                  _selectScreen(1);
                 },
               ),
               const SizedBox(width: 40), // Space for FAB
               IconButton(
-                icon: const Icon(Icons.shopping_cart_outlined,
-                    color: Colors.grey),
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  size: 32,
+                  color: _selectedScreenIndex == 2 ? Colors.black : Colors.grey,
+                ),
                 iconSize: 32,
                 onPressed: () {
-                  // Optional: cart functionality
+                  _selectScreen(2);
                 },
               ),
               IconButton(
                 icon: Icon(
-                  Icons.person_outline,
-                  color: _selectedScreenIndex == 2 ? Colors.black : Colors.grey,
+                  Icons.person,
                   size: 32,
+                  color: _selectedScreenIndex == 4 ? Colors.black : Colors.grey,
                 ),
-                onPressed: () => _selectScreen(2),
+                onPressed: () => _selectScreen(4),
               ),
             ],
           ),

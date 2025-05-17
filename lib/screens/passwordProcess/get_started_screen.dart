@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messages_apk/screens/Welcome_screen.dart';
-import 'package:messages_apk/screens/sign_in_screen.dart';
+import 'package:messages_apk/screens/auth/Welcome_screen.dart';
+import 'package:messages_apk/screens/auth/sign_in_screen.dart';
 
 class GetStartedScreen extends StatelessWidget {
   static const String screenRoute = 'get_started_screen';

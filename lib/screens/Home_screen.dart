@@ -79,6 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       oldPrice: "115.00 DH",
                       imagePath: 'images/categories/chocolate.png',
                       rating: 9.8),
+                  ProductCard(
+                      name: "GOLDEN VABRE COFFEE",
+                      price: "99.00 DH",
+                      oldPrice: "115.00 DH",
+                      imagePath: 'images/categories/chocolate.png',
+                      rating: 9.8),
                 ],
               ),
             ),

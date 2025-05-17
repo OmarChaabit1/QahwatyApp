@@ -1,4 +1,5 @@
-import 'package:messages_apk/screens/Welcome_screen.dart';
+import 'package:messages_apk/screens/auth/Welcome_screen.dart';
+import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/profile/help_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
@@ -94,6 +95,15 @@ class AppDrawer extends StatelessWidget {
             () {
               Navigator.of(context)
                   .pushReplacementNamed(TabsScreen.screenRoute);
+            },
+          ),
+           buildListTile(
+            context, // Ajout du context ici
+            'Notifications',
+            Icons.home,
+            () {
+              Navigator.of(context)
+                  .pushReplacementNamed(NotificationScreen.screenRoute);
             },
           ),
           buildListTile(
