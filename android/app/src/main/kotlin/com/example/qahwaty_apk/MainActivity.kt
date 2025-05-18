@@ -1,4 +1,4 @@
-package com.example.messages_apk
+package com.example.qahwaty_apk
 
 import io.flutter.embedding.android.FlutterActivity
 

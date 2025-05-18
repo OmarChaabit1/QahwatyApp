@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "711642542247",
+    "project_id": "qahwatyapp",
+    "storage_bucket": "qahwatyapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711642542247:android:4d0c16431d715b32912b82",
+        "android_client_info": {
+          "package_name": "com.example.qahwaty_apk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKGR98xrG0XBxzqi8xlNQq0OK_kmze3jA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

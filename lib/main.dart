@@ -23,12 +23,18 @@ void main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
-            apiKey: "AIzaSyCoP-OdutejThx3BS-eROHcQBpzupP2DYw",
-            authDomain: "messagesapk-c5194.firebaseapp.com",
-            projectId: "messagesapk-c5194",
-            storageBucket: "messagesapk-c5194.firebasestorage.app",
-            messagingSenderId: "249966798374",
-            appId: "1:249966798374:web:098f63881aaed99d99a8e7"));
+            // apiKey: "AIzaSyCoP-OdutejThx3BS-eROHcQBpzupP2DYw",
+            // authDomain: "messagesapk-c5194.firebaseapp.com",
+            // projectId: "messagesapk-c5194",
+            // storageBucket: "messagesapk-c5194.firebasestorage.app",
+            // messagingSenderId: "249966798374",
+            // appId: "1:249966798374:web:098f63881aaed99d99a8e7"));
+            apiKey: "AIzaSyCmke_n_quxNytAV89930s4UQB8axkYo7g",
+            authDomain: "qahwatyapp.firebaseapp.com",
+            projectId: "qahwatyapp",
+            storageBucket: "qahwatyapp.firebasestorage.app",
+            messagingSenderId: "711642542247",
+            appId: "1:711642542247:web:83b395f4f9b4e402912b82"));
   } else {
     await Firebase.initializeApp();
   }
@@ -41,7 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Message App ',
+      title: 'Qahwaty',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

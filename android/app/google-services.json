@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "249966798374",
-    "project_id": "messagesapk-c5194",
-    "storage_bucket": "messagesapk-c5194.firebasestorage.app"
+    "project_number": "711642542247",
+    "project_id": "qahwatyapp",
+    "storage_bucket": "qahwatyapp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:249966798374:android:49a91749c1ff7baf99a8e7",
+        "mobilesdk_app_id": "1:711642542247:android:4d0c16431d715b32912b82",
         "android_client_info": {
-          "package_name": "com.example.messages_apk"
+          "package_name": "com.example.qahwaty_apk"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "711642542247-aa5q329fkmmsi6v73kn6gho0etmo0f5i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.qahwaty_apk",
+            "certificate_hash": "1d7d5d321da51f876869f1d77c7d97e8af5bedda"
+          }
+        },
+        {
+          "client_id": "711642542247-at6i04qd8b2mdd80djr97gt5j1qlg2l0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXv52Vou_t6Mw_El9dx0XkZ5LB0_DRKa4"
+          "current_key": "AIzaSyBKGR98xrG0XBxzqi8xlNQq0OK_kmze3jA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711642542247-at6i04qd8b2mdd80djr97gt5j1qlg2l0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
