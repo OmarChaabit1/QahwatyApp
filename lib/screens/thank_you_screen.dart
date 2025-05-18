@@ -43,6 +43,8 @@ class ThankYouScreen extends StatelessWidget {
                   children: [
                     // ✅ checkmark ddisplay -----------
                     //c d
+                    // ddd
+
                     CircleAvatar(
                       radius: 35,
                       backgroundColor: kGreen,
