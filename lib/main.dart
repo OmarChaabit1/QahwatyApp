@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         UpdateProfileScreen.screenRoute: (context) => UpdateProfileScreen(
             currentUser: FirebaseAuth.instance.currentUser!),
         HelpScreen.screenRoute: (context) => HelpScreen(),
-        // d
+        
       },
     );
   }
