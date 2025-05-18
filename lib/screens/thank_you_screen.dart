@@ -42,7 +42,7 @@ class ThankYouScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     // ✅ checkmark ddisplay -----------
-                    //c d
+          
                     
 
                     CircleAvatar(
