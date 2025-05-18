@@ -38,7 +38,7 @@ class ThankYouScreen extends StatelessWidget {
                 color: Colors.white,
                 width: double.infinity,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 25, horizontal: 24),
+                    const EdgeInsets.symmetric(vertical: 160, horizontal: 24),
                 child: Column(
                   children: [
                     // ✅ checkmark
