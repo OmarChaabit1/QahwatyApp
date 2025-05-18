@@ -41,7 +41,7 @@ class ThankYouScreen extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 160, horizontal: 24),
                 child: Column(
                   children: [
-                    // ✅ checkmark dd
+                    // ✅ checkmark ddisplay -----------
                     CircleAvatar(
                       radius: 35,
                       backgroundColor: kGreen,
