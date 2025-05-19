@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messages_apk/shared/widgets/CategoryCard.dart';
 import 'package:messages_apk/shared/widgets/ProductCard.dart';
 
@@ -8,6 +9,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<List<Map<String, dynamic>>> fetchNewArrivals() async {
+    QuerySnapshot snapshot = await _firestore.collection('new_arrivals').get();
+
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,31 +73,37 @@ class _HomeScreenState extends State<HomeScreen> {
             const Text('NEWEST PRODUCTS',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: const [
-                  ProductCard(
-                    name: "JACQUES VABRE COFFEE",
-                    price: "99.00 DH",
-                    oldPrice: "115.00 DH",
-                    rating: 9.8,
-                    imagePath: 'images/categories/chocolate.png',
+
+            /// 🆕 Fetching and displaying from Firestore
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: fetchNewArrivals(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Text('Error loading products');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Text('No new arrivals');
+                }
+
+                final products = snapshot.data!;
+
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: products.map((product) {
+                      return ProductCard(
+                        name: product['name'] ?? '',
+                        price: '${product['price']} DH',
+                        oldPrice: '${product['oldPrice']} DH',
+                        imagePath: product['imagePath'] ??
+                            'images/categories/sugar.png',
+                        rating: product['rating']?.toDouble() ?? 0.0,
+                      );
+                    }).toList(),
                   ),
-                  ProductCard(
-                      name: "GOLDEN VABRE COFFEE",
-                      price: "99.00 DH",
-                      oldPrice: "115.00 DH",
-                      imagePath: 'images/categories/chocolate.png',
-                      rating: 9.8),
-                  ProductCard(
-                      name: "GOLDEN VABRE COFFEE",
-                      price: "99.00 DH",
-                      oldPrice: "115.00 DH",
-                      imagePath: 'images/categories/chocolate.png',
-                      rating: 9.8),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),

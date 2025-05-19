@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/Home_screen.dart';
+import 'package:messages_apk/screens/admin/admin_panel_screen.dart';
+import 'package:messages_apk/screens/adminPannel/screens/dashboard_screen.dart';
 import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/dashboard_screen.dart';
@@ -46,6 +48,10 @@ class _TabsScreenState extends State<TabsScreen> {
         'Screen':
             ProfileScreen(currentUser: FirebaseAuth.instance.currentUser!),
         'Title': 'Profile',
+      },
+      {
+        'Screen': DashboardScreen(),
+        'Title': 'Dashboard',
       },
     ];
     super.initState();
@@ -130,6 +136,14 @@ class _TabsScreenState extends State<TabsScreen> {
                   color: _selectedScreenIndex == 4 ? Colors.black : Colors.grey,
                 ),
                 onPressed: () => _selectScreen(4),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.dashboard,
+                  size: 32,
+                  color: _selectedScreenIndex == 5 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () => _selectScreen(5),
               ),
             ],
           ),

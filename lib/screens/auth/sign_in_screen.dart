@@ -200,9 +200,53 @@ class _signInScreenState extends State<signInScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
+                    // ElevatedButton(
+                    //   onPressed: () async {
+                    //     setState(() => showSpinner = true);
+                    //     try {
+                    //       final user = await _auth.signInWithEmailAndPassword(
+                    //           email: email, password: password);
+                    //       if (user != null) {
+                    //         Navigator.pushNamed(
+                    //             context, TabsScreen.screenRoute);
+                    //       }
+                    //       setState(() => showSpinner = false);
+                    //     } catch (e) {
+                    //       print(e);
+                    //       setState(() => showSpinner = false);
+                    //     }
+                    //   },
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Color.fromARGB(255, 177, 127, 52),
+                    //     padding: EdgeInsets.symmetric(vertical: 14),
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(25),
+                    //     ),
+                    //     minimumSize: Size(double.infinity, 50),
+                    //   ),
+                    //   child: Text(
+                    //     'Login',
+                    //     style: TextStyle(fontSize: 18, color: Colors.white),
+                    //   ),
+                    // ),
                     ElevatedButton(
                       onPressed: () async {
                         setState(() => showSpinner = true);
+
+                        // ✅ Vérifie si c'est l'admin
+                        const String adminEmail =
+                            'admin@gmail.com'; // <-- Remplace par ton email admin réel
+
+                        if (email.trim().toLowerCase() != adminEmail) {
+                          setState(() => showSpinner = false);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Only admin can log in with email and password')),
+                          );
+                          return;
+                        }
+
                         try {
                           final user = await _auth.signInWithEmailAndPassword(
                               email: email, password: password);
@@ -210,9 +254,12 @@ class _signInScreenState extends State<signInScreen> {
                             Navigator.pushNamed(
                                 context, TabsScreen.screenRoute);
                           }
-                          setState(() => showSpinner = false);
                         } catch (e) {
                           print(e);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Failed to log in: $e')),
+                          );
+                        } finally {
                           setState(() => showSpinner = false);
                         }
                       },
@@ -229,6 +276,7 @@ class _signInScreenState extends State<signInScreen> {
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
+
                     SizedBox(height: 20),
                     ElevatedButton.icon(
                       icon: Image.asset(

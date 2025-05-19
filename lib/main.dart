@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:messages_apk/screens/admin/admin_panel_screen.dart';
+import 'package:messages_apk/screens/adminPannel/screens/dashboard_screen.dart';
 import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
 import 'package:messages_apk/screens/passwordProcess/get_started_screen.dart';
@@ -55,6 +57,10 @@ class MyApp extends StatelessWidget {
           ? TabsScreen.screenRoute
           : GetStartedScreen.screenRoute,
       routes: {
+        // admin
+        AdminPanelScreen.screenRoute: (context) => AdminPanelScreen(),
+
+//
         TabsScreen.screenRoute: (context) => TabsScreen(),
         GetStartedScreen.screenRoute: (context) => GetStartedScreen(),
         // Initial route to TabsScreen
@@ -65,7 +71,7 @@ class MyApp extends StatelessWidget {
         //       chatPartnerEmail: '',
         //     ),
         dashboardScreen.screenRoute: (context) => dashboardScreen(),
-
+        DashboardScreen.screenRoute: (context) => DashboardScreen(),
         // ========== notification process ==============
         NotificationScreen.screenRoute: (context) => NotificationScreen(),
 
