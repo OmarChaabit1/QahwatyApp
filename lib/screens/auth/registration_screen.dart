@@ -186,12 +186,14 @@
 //       ),
 //     );
 //   }
-// }
+// // }
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:messages_apk/screens/auth/sign_in_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class registrationScreen extends StatefulWidget {
   static const String screenRoute = 'registration_screen';
@@ -238,6 +240,36 @@ class _registrationScreenState extends State<registrationScreen> {
       ));
     }
     setState(() => showSpinner = false);
+  }
+
+  Future<void> supaRegisterWithEmail() async {
+    setState(() => showSpinner = true);
+    try {
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
+        password: password,
+        emailRedirectTo: 'http://localhost:55018/',
+      );
+
+      final user = response.user;
+
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Un email de vérification a été envoyé. Vérifiez votre boîte mail.',
+          ),
+        ));
+
+        Navigator.pushNamed(context, signInScreen.screenRoute);
+      }
+    } catch (e) {
+      print('Erreur inscription : $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Erreur lors de l\'inscription.'),
+      ));
+    } finally {
+      setState(() => showSpinner = false);
+    }
   }
 
   // Fonction pour se connecter avec Google
@@ -406,7 +438,7 @@ class _registrationScreenState extends State<registrationScreen> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: registerWithEmail,
+                      onPressed: supaRegisterWithEmail,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 177, 127, 52),
                         padding: EdgeInsets.symmetric(vertical: 14),

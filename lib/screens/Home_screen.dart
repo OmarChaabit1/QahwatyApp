@@ -96,8 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         name: product['name'] ?? '',
                         price: '${product['price']} DH',
                         oldPrice: '${product['oldPrice']} DH',
-                        imagePath: product['imagePath'] ??
-                            'images/categories/sugar.png',
+                        imagePath: product['imageURL'] ??
+                            '', // ✅ add a fallback in case it's null
                         rating: product['rating']?.toDouble() ?? 0.0,
                       );
                     }).toList(),

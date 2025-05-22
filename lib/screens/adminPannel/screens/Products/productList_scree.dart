@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Products/add_product_form.dart';
 
+import '../widgets/edit_product_form.dart';
+
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
 final Color kAccent = const Color(0xFF71503C);
@@ -33,9 +35,8 @@ class _ProductlistScreeState extends State<ProductlistScree> {
   }
 
   void editProduct(DocumentSnapshot doc) {
-    // TODO: Implement editing logic
-    // For example, navigate to AddProductForm with doc data prefilled for editing
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => EditProductForm(doc: doc)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => EditProductForm(productId: doc.id)));
   }
 
   @override
@@ -89,30 +90,90 @@ class _ProductlistScreeState extends State<ProductlistScree> {
                 final doc = docs[index];
                 final data = doc.data() as Map<String, dynamic>;
 
+                final imageUrl = data['imageURL'];
+                final isValidUrl =
+                    imageUrl != null && imageUrl.toString().startsWith('http');
+
+                final productName = data['name'] ?? 'Unnamed Product';
+                final productPrice =
+                    data['price'] != null ? '\$${data['price']}' : '';
+                final oldPrice =
+                    data['oldPrice'] != null ? '\$${data['oldPrice']}' : '';
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 10),
                   child: GlassCard(
                     child: ListTile(
-                      leading:
-                          Image.asset('images/logo.png', width: 50, height: 50),
-                      title: Text(data['name'] ?? 'No name',
-                          style: TextStyle(
-                              color: kText, fontWeight: FontWeight.bold)),
-                      subtitle: Text(
-                        "Price: ${data['price']} DH\nRating: ${data['rating']}",
-                        style: TextStyle(color: kText.withOpacity(0.7)),
+                      contentPadding: EdgeInsets.all(12),
+                      leading: isValidUrl
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                imageUrl,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
+                                  Icons.broken_image,
+                                  color: kText.withOpacity(0.6),
+                                  size: 40,
+                                ),
+                              ),
+                            )
+                          : Icon(
+                              Icons.image_not_supported,
+                              color: kText.withOpacity(0.6),
+                              size: 40,
+                            ),
+                      title: Text(
+                        productName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: kText,
+                        ),
                       ),
+                      subtitle: (productPrice.isNotEmpty || oldPrice.isNotEmpty)
+                          ? Row(
+                              children: [
+                                if (productPrice.isNotEmpty)
+                                  Text(
+                                    productPrice,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.green[700],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                SizedBox(width: 10),
+                                if (oldPrice.isNotEmpty)
+                                  Text(
+                                    oldPrice,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.red,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: Colors.red,
+                                      decorationThickness: 2,
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : null,
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
                             icon: Icon(Icons.edit, color: Colors.blue),
                             onPressed: () => editProduct(doc),
+                            tooltip: 'Edit Product',
                           ),
                           IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () => deleteProduct(doc.id),
+                            tooltip: 'Delete Product',
                           ),
                         ],
                       ),

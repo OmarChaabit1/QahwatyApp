@@ -16,7 +16,6 @@ class ProductCard extends StatelessWidget {
     required this.imagePath,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,12 +32,22 @@ class ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         Image.asset(
-  imagePath,
-  height: 100,
-  width: double.infinity,
-  fit: BoxFit.cover,
-),
+          imagePath.startsWith('http')
+              ? Image.network(
+                  imagePath,
+                  height: 100,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.broken_image),
+                )
+              : Image.asset(
+                  imagePath,
+                  height: 100,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+
 // Replace with Image.network(...)
           const SizedBox(height: 5),
           Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),

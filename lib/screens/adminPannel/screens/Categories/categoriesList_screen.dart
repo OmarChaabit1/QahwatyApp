@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Categories/add_category_form.dart';
+import 'package:messages_apk/screens/adminPannel/screens/widgets/edit_category_form.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
@@ -15,21 +16,28 @@ class CategoriesListScreen extends StatefulWidget {
 class _CategoriesListScreenState extends State<CategoriesListScreen> {
   Future<void> deleteCategory(String docId) async {
     try {
-      await FirebaseFirestore.instance.collection('categories').doc(docId).delete();
+      await FirebaseFirestore.instance
+          .collection('categories')
+          .doc(docId)
+          .delete();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Category deleted'), backgroundColor: Colors.red),
+        SnackBar(
+            content: Text('Category deleted'), backgroundColor: Colors.red),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting category'), backgroundColor: Colors.red),
+        SnackBar(
+            content: Text('Error deleting category'),
+            backgroundColor: Colors.red),
       );
     }
   }
 
   void editCategory(DocumentSnapshot doc) {
-    // You can navigate to AddCategoryForm with existing doc data for editing
-    // Example:
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => EditCategoryForm(doc: doc)));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => EditCategoryForm(doc: doc)),
+    );
   }
 
   @override
@@ -39,7 +47,6 @@ class _CategoriesListScreenState extends State<CategoriesListScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: kAccent,
         onPressed: () {
-          // Navigate to AddCategoryForm to add a new category
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => AddCategoryForm()),
@@ -67,10 +74,13 @@ class _CategoriesListScreenState extends State<CategoriesListScreen> {
           ),
         ),
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('categories').snapshots(),
+          stream:
+              FirebaseFirestore.instance.collection('categories').snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.hasError) return Center(child: Text('Error loading data'));
-            if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+            if (snapshot.hasError)
+              return Center(child: Text('Error loading data'));
+            if (!snapshot.hasData)
+              return Center(child: CircularProgressIndicator());
 
             final docs = snapshot.data!.docs;
             if (docs.isEmpty) return Center(child: Text('No categories found'));
@@ -81,23 +91,50 @@ class _CategoriesListScreenState extends State<CategoriesListScreen> {
               itemBuilder: (context, index) {
                 final doc = docs[index];
                 final data = doc.data() as Map<String, dynamic>;
-                final subcategories = List<String>.from(data['subcategories'] ?? []);
+                final subcategories =
+                    List<String>.from(data['subcategories'] ?? []);
+
+                final imageUrl = data['imageUrl'];
+                final isValidUrl =
+                    imageUrl != null && imageUrl.toString().startsWith('http');
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10),
                   child: GlassCard(
                     child: ListTile(
+                      leading: isValidUrl
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                imageUrl,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
+                                  Icons.broken_image,
+                                  color: kText.withOpacity(0.6),
+                                ),
+                              ),
+                            )
+                          : Icon(Icons.image_not_supported,
+                              color: kText.withOpacity(0.6)),
                       title: Text(
                         data['name'] ?? 'No name',
-                        style: TextStyle(color: kText, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: kText, fontWeight: FontWeight.bold),
                       ),
                       subtitle: subcategories.isEmpty
-                          ? Text('No subcategories', style: TextStyle(color: kText.withOpacity(0.7)))
+                          ? Text('No subcategories',
+                              style: TextStyle(color: kText.withOpacity(0.7)))
                           : Wrap(
                               spacing: 6,
                               children: subcategories
                                   .map((sub) => Chip(
-                                        label: Text(sub, style: TextStyle(color: Colors.white)),
+                                        label: Text(sub,
+                                            style:
+                                                TextStyle(color: Colors.white)),
                                         backgroundColor: kAccent,
                                       ))
                                   .toList(),

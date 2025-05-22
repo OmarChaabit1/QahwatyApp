@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddCategoryForm extends StatefulWidget {
   @override
@@ -54,31 +55,46 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
   //   showSuccess('Category added!');
   // }
 
-  void addCategory() async {
+  Future<void> addCategory() async {
     final name = nameController.text.trim();
-    if (name.isEmpty) {
-      showError('Please enter a category name.');
-      return;
-    }
 
-    if (selectedImageBytes == null) {
-      showError('Please select an image.');
+    final supabase = Supabase.instance.client;
+
+    if (selectedImageBytes == null || selectedImageBytes!.isEmpty) {
+      showError('Please select a valid image.');
       return;
     }
 
     try {
-      // Upload to Firebase Storage
-      final ref = FirebaseStorage.instance
-          .ref('category_images/${DateTime.now().millisecondsSinceEpoch}.png');
-      await ref.putData(selectedImageBytes!);
-      final url = await ref.getDownloadURL();
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+      final filePath = 'images/$fileName';
 
+      // ✅ Upload to Supabase Storage
+      final uploadResult = await supabase.storage.from('qahwaty').uploadBinary(
+            filePath,
+            selectedImageBytes!,
+            fileOptions: const FileOptions(
+              contentType: 'image/png',
+              upsert: true,
+            ),
+          );
+
+      if (uploadResult.isEmpty) {
+        throw Exception('Upload failed or returned an empty result.');
+      }
+
+      // ✅ Get public URL
+      final publicUrl = supabase.storage.from('qahwaty').getPublicUrl(filePath);
+
+      // ✅ Insert into Firebase Firestore
       await FirebaseFirestore.instance.collection('categories').add({
         'name': name,
         'subcategories': subcategories,
-        'imageUrl': url,
+        'imageUrl': publicUrl,
+        'createdAt': FieldValue.serverTimestamp(), // optional
       });
 
+      // ✅ Reset UI
       nameController.clear();
       subController.clear();
       setState(() {
@@ -86,7 +102,7 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
         selectedImageBytes = null;
       });
 
-      showSuccess('Category added!');
+      showSuccess('Category added successfully!');
     } catch (e) {
       showError('Failed to add category: $e');
     }

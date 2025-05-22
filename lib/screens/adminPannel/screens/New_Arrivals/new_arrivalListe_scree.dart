@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/add_new_arrivals.dart';
+import 'package:messages_apk/screens/adminPannel/screens/widgets/edit_newArrivals_form.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
@@ -32,8 +33,8 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
   }
 
   void editProduct(DocumentSnapshot doc) {
-    // Placeholder for edit logic
-    // You can navigate to NewArrivalsScreen with doc data
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => EditNewForm(productId: doc.id)));
   }
 
   @override
@@ -88,21 +89,72 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
               itemBuilder: (context, index) {
                 final doc = docs[index];
                 final data = doc.data() as Map<String, dynamic>;
+                final imageUrl = data['imageURL'];
+                final isValidUrl =
+                    imageUrl != null && imageUrl.toString().startsWith('http');
+                final productName = data['name'] ?? 'Unnamed Product';
+                final productPrice =
+                    data['price'] != null ? '\$${data['price']}' : '';
+                final oldPrice =
+                    data['oldPrice'] != null ? '\$${data['oldPrice']}' : '';
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 10),
                   child: GlassCard(
                     child: ListTile(
-                      leading:
-                          Image.asset('images/logo.png', width: 50, height: 50),
-                      title: Text(data['name'] ?? 'No name',
-                          style: TextStyle(
-                              color: kText, fontWeight: FontWeight.bold)),
-                      subtitle: Text(
-                        "Price: ${data['price']} DH\nRating: ${data['rating']}",
-                        style: TextStyle(color: kText.withOpacity(0.7)),
+                      leading: isValidUrl
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                imageUrl,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
+                                  Icons.broken_image,
+                                  color: kText.withOpacity(0.6),
+                                ),
+                              ),
+                            )
+                          : Icon(Icons.image_not_supported,
+                              color: kText.withOpacity(0.6)),
+                      title: Text(
+                        productName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: kText,
+                        ),
                       ),
+                      subtitle: (productPrice.isNotEmpty || oldPrice.isNotEmpty)
+                          ? Row(
+                              children: [
+                                if (productPrice.isNotEmpty)
+                                  Text(
+                                    productPrice,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.green[700],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                SizedBox(width: 10),
+                                if (oldPrice.isNotEmpty)
+                                  Text(
+                                    oldPrice,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.red,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: Colors.red,
+                                      decorationThickness: 2,
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : null,
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

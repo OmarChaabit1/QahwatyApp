@@ -1,6 +1,9 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
@@ -25,6 +28,20 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
 
   bool loadingCategories = true;
   bool loadingSubcategories = false;
+  //
+  Uint8List? selectedImageBytes;
+  Future<void> pickImage() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: true,
+    );
+
+    if (result != null && result.files.single.bytes != null) {
+      setState(() {
+        selectedImageBytes = result.files.single.bytes;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -88,7 +105,35 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
       return;
     }
 
+    // uploading image from supaabase
+    final supabase = Supabase.instance.client;
+
+    if (selectedImageBytes == null || selectedImageBytes!.isEmpty) {
+      showError('Please select a valid image.');
+      return;
+    }
+
     try {
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+      final filePath = 'new_arrivals/$fileName';
+
+      // ✅ Upload to Supabase Storage
+      final uploadResult = await supabase.storage.from('qahwaty').uploadBinary(
+            filePath,
+            selectedImageBytes!,
+            fileOptions: const FileOptions(
+              contentType: 'image/png',
+              upsert: true,
+            ),
+          );
+
+      if (uploadResult.isEmpty) {
+        throw Exception('Upload failed or returned an empty result.');
+      }
+
+      // ✅ Get public URL
+      final publicUrl = supabase.storage.from('qahwaty').getPublicUrl(filePath);
+
       await FirebaseFirestore.instance.collection('new_arrivals').add({
         'name': name,
         'price': price,
@@ -96,7 +141,7 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
         'rating': rating,
         'category': selectedCategory,
         'subcategory': selectedSubcategory,
-        'imageURL': 'logo.png', // Placeholder
+        'imageURL': publicUrl, // Placeholder
       });
 
       clearForm();
@@ -185,7 +230,23 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
                       style: TextStyle(color: kText),
                       decoration: buildInputDecoration("Product Name"),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
+                    selectedImageBytes != null
+                        ? Image.memory(
+                            selectedImageBytes!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                        : Text("No image selected",
+                            style: TextStyle(color: kText)),
+                    TextButton.icon(
+                      onPressed: pickImage,
+                      icon: Icon(Icons.image, color: kAccent),
+                      label:
+                          Text("Pick Image", style: TextStyle(color: kAccent)),
+                    ),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: priceController,
                       style: TextStyle(color: kText),

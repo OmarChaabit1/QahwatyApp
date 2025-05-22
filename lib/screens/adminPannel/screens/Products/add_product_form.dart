@@ -1,8 +1,11 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/new_arrivalListe_scree.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
@@ -27,6 +30,21 @@ class _AddProductFormState extends State<AddProductForm> {
 
   bool loadingCategories = true;
   bool loadingSubcategories = false;
+
+  //
+  Uint8List? selectedImageBytes;
+  Future<void> pickImage() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: true,
+    );
+
+    if (result != null && result.files.single.bytes != null) {
+      setState(() {
+        selectedImageBytes = result.files.single.bytes;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -102,8 +120,35 @@ class _AddProductFormState extends State<AddProductForm> {
       showError('Please select a subcategory.');
       return;
     }
+    // uploading image from supaabase
+    final supabase = Supabase.instance.client;
+
+    if (selectedImageBytes == null || selectedImageBytes!.isEmpty) {
+      showError('Please select a valid image.');
+      return;
+    }
 
     try {
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+      final filePath = 'product_images/$fileName';
+
+      // ✅ Upload to Supabase Storage
+      final uploadResult = await supabase.storage.from('qahwaty').uploadBinary(
+            filePath,
+            selectedImageBytes!,
+            fileOptions: const FileOptions(
+              contentType: 'image/png',
+              upsert: true,
+            ),
+          );
+
+      if (uploadResult.isEmpty) {
+        throw Exception('Upload failed or returned an empty result.');
+      }
+
+      // ✅ Get public URL
+      final publicUrl = supabase.storage.from('qahwaty').getPublicUrl(filePath);
+
       await FirebaseFirestore.instance.collection('products').add({
         'name': name,
         'price': price,
@@ -111,7 +156,7 @@ class _AddProductFormState extends State<AddProductForm> {
         'rating': rating,
         'category': selectedCategory,
         'subcategory': selectedSubcategory,
-        'imageURL': 'logo.png', // replace with actual image URL or picker
+        'imageURL': publicUrl,
       });
       clearForm();
       showSuccess('Product added!');
@@ -119,6 +164,8 @@ class _AddProductFormState extends State<AddProductForm> {
       showError('Failed to add product.');
     }
   }
+
+
 
   void clearForm() {
     nameController.clear();
@@ -199,7 +246,23 @@ class _AddProductFormState extends State<AddProductForm> {
                       style: TextStyle(color: kText),
                       decoration: buildInputDecoration("Product Name"),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
+                    selectedImageBytes != null
+                        ? Image.memory(
+                            selectedImageBytes!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                        : Text("No image selected",
+                            style: TextStyle(color: kText)),
+                    TextButton.icon(
+                      onPressed: pickImage,
+                      icon: Icon(Icons.image, color: kAccent),
+                      label:
+                          Text("Pick Image", style: TextStyle(color: kAccent)),
+                    ),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: priceController,
                       keyboardType:
