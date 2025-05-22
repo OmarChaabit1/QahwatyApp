@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:messages_apk/shared/widgets/ProductCard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final Color kBg = const Color(0xFFF0DDC9);
+final Color kText = const Color(0xFF333333);
+final Color kAccent = const Color(0xFF71503C);
 
 class CategoryProductsScreen extends StatefulWidget {
   final String category;
@@ -13,7 +17,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   String selectedSubcategory = 'ALL';
   String searchQuery = '';
 
-  // ------------ demo data ------------
   Map<String, List<String>> subcategoriesMap = {
     'COFFEE': ['ALL', 'EN GRAIN', 'SACHET', 'CAPSUL'],
     'TEA': ['ALL', 'EN GRAIN', 'SACHET', 'VERVEINE'],
@@ -22,275 +25,199 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     'GOBELETS': ['ALL', 'PETITE', 'MOYENE', 'GRAND'],
   };
 
-  List<Map<String, dynamic>> _getProducts(String category) {
-    switch (category) {
-      // ------------------------------------------------ COFFEE
-      case 'COFFEE':
-        return [
-          {
-            'name': 'Jacques Vabre Classic',
-            'price': '99.00 DH',
-            'oldPrice': '115.00 DH',
-            'rating': 9.2,
-            'subcategory': 'SACHET',
-            'image': 'images/categories/coffee.png',
-          },
-          {
-            'name': 'Golden Vabre Arabica',
-            'price': '89.00 DH',
-            'oldPrice': '105.00 DH',
-            'rating': 9.0,
-            'subcategory': 'EN GRAIN',
-            'image': 'images/categories/coffee.png',
-          },
-          {
-            'name': 'Espresso Caps Intenso',
-            'price': '69.00 DH',
-            'oldPrice': '80.00 DH',
-            'rating': 8.8,
-            'subcategory': 'CAPSUL',
-            'image': 'images/categories/coffee.png',
-          },
-          {
-            'name': 'Café Mokka Moulu',
-            'price': '79.00 DH',
-            'oldPrice': '92.00 DH',
-            'rating': 9.1,
-            'subcategory': 'SACHET',
-            'image': 'images/categories/coffee.png',
-          },
-        ];
+  Future<List<Map<String, dynamic>>> fetchProducts() async {
+    final collection = FirebaseFirestore.instance.collection('products');
+    Query query = collection.where('category', isEqualTo: widget.category);
 
-      // ------------------------------------------------ TEA
-      case 'TEA':
-        return [
-          {
-            'name': 'Green Tea Verveine',
-            'price': '45.00 DH',
-            'oldPrice': '55.00 DH',
-            'rating': 8.6,
-            'subcategory': 'VERVEINE',
-            'image': 'images/categories/tea.png',
-          },
-          {
-            'name': 'Black Tea Classic',
-            'price': '38.00 DH',
-            'oldPrice': '45.00 DH',
-            'rating': 8.4,
-            'subcategory': 'SACHET',
-            'image': 'images/categories/tea.png',
-          },
-          {
-            'name': 'Premium Tea Leaves',
-            'price': '52.00 DH',
-            'oldPrice': '60.00 DH',
-            'rating': 8.9,
-            'subcategory': 'EN GRAIN',
-            'image': 'images/categories/tea.png',
-          },
-        ];
-
-      // ------------------------------------------------ CHOCOLAT
-      case 'CHOCOLAT':
-        return [
-          {
-            'name': 'Choco Mix Morceaux',
-            'price': '59.00 DH',
-            'oldPrice': '70.00 DH',
-            'rating': 9.0,
-            'subcategory': 'MORCEAUX',
-            'image': 'images/categories/chocolate.png',
-          },
-          {
-            'name': 'Instant Choco Sachet',
-            'price': '48.00 DH',
-            'oldPrice': '56.00 DH',
-            'rating': 8.7,
-            'subcategory': 'SACHET',
-            'image': 'images/categories/chocolate.png',
-          },
-          {
-            'name': 'Choco Slim Diabétique',
-            'price': '62.00 DH',
-            'oldPrice': '75.00 DH',
-            'rating': 8.9,
-            'subcategory': 'DIABETIQUE',
-            'image': 'images/categories/chocolate.png',
-          },
-        ];
-
-      // ------------------------------------------------ SUGAR
-      case 'SUGAR':
-        return [
-          {
-            'name': 'Sucre Poudre 1 kg',
-            'price': '19.00 DH',
-            'oldPrice': '24.00 DH',
-            'rating': 9.1,
-            'subcategory': 'POUDRE',
-            'image': 'images/categories/sugar.png',
-          },
-          {
-            'name': 'Sucre Liquide 500 ml',
-            'price': '22.00 DH',
-            'oldPrice': '27.00 DH',
-            'rating': 8.5,
-            'subcategory': 'LIQUIDE',
-            'image': 'images/categories/sugar.png',
-          },
-          {
-            'name': 'Sugar Sticks 100 pcs',
-            'price': '30.00 DH',
-            'oldPrice': '35.00 DH',
-            'rating': 8.8,
-            'subcategory': 'MATERIAL',
-            'image': 'images/categories/sugar.png',
-          },
-        ];
-
-      // ------------------------------------------------ GOBELETS
-      case 'GOBELETS':
-        return [
-          {
-            'name': 'Gobelets Petit (100 pcs)',
-            'price': '25.00 DH',
-            'oldPrice': '30.00 DH',
-            'rating': 8.3,
-            'subcategory': 'PETITE',
-            'image': 'images/categories/goblets.png',
-          },
-          {
-            'name': 'Gobelets Moyen (100 pcs)',
-            'price': '32.00 DH',
-            'oldPrice': '38.00 DH',
-            'rating': 8.6,
-            'subcategory': 'MOYENE',
-            'image': 'images/categories/goblets.png',
-          },
-          {
-            'name': 'Gobelets Grand (100 pcs)',
-            'price': '39.00 DH',
-            'oldPrice': '46.00 DH',
-            'rating': 8.9,
-            'subcategory': 'GRAND',
-            'image': 'images/categories/goblets.png',
-          },
-        ];
-
-      // ------------------------------------------------ default
-      default:
-        return [];
+    if (selectedSubcategory != 'ALL') {
+      query = query.where('subcategory', isEqualTo: selectedSubcategory);
     }
-  }
 
-  // -----------------------------------
+    final snapshot = await query.get();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final categoryKey = widget.category.toUpperCase();
-    final allProducts = _getProducts(categoryKey);
-    final subcats = subcategoriesMap[categoryKey] ?? ['ALL'];
-
-    // filter by sub-category and search text
-    final products = allProducts.where((p) {
-      final subcatOK = selectedSubcategory == 'ALL' ||
-          p['subcategory'] == selectedSubcategory;
-      final searchOK = p['name']
-          .toString()
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase());
-      return subcatOK && searchOK;
-    }).toList();
+    final subcategories = subcategoriesMap[widget.category] ?? ['ALL'];
 
     return Scaffold(
+      backgroundColor: kBg,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: kBg,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: TextField(
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            hintText: 'search for product . . .',
+            prefixIcon: const Icon(Icons.search, color: Colors.black54),
+            fillColor: Colors.white,
+            filled: true,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+          ),
+          onChanged: (value) => setState(() => searchQuery = value),
+        ),
+      ),
       body: Column(
         children: [
-          // ---------- Header (back + search) ----------
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEFEFEF),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: TextField(
-                        onChanged: (txt) {
-                          setState(() => searchQuery = txt);
-                        },
-                        decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 16),
-                          hintText: 'search for product…',
-                          border: InputBorder.none,
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: () {}, // optional action
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // ---------- Sub-category chips ----------
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: subcats.map((sub) {
-                final sel = sub == selectedSubcategory;
+          const SizedBox(height: 8),
+          // Chips for subcategories
+          SizedBox(
+            height: 40,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: subcategories.length,
+              itemBuilder: (context, index) {
+                final sub = subcategories[index];
+                final isSelected = sub == selectedSubcategory;
+
                 return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: ChoiceChip(
                     label: Text(sub),
-                    selected: sel,
-                    selectedColor: Colors.brown[300],
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
+                    selected: isSelected,
+                    selectedColor: Colors.black,
+                    backgroundColor: Colors.white,
                     onSelected: (_) =>
                         setState(() => selectedSubcategory = sub),
                   ),
                 );
-              }).toList(),
+              },
             ),
           ),
-          // ---------- Products grid ----------
+          const SizedBox(height: 10),
+          // Grid of product cards
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: products.isEmpty
-                  ? const Center(child: Text('No products found.'))
-                  : GridView.builder(
-                      itemCount: products.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisExtent: 250,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (_, i) {
-                        final p = products[i];
-                        return ProductCard(
-                          name: p['name'],
-                          price: p['price'],
-                          oldPrice: p['oldPrice'],
-                          rating: p['rating'],
-                          imagePath: p['image'],
-                        );
-                      },
-                    ),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: fetchProducts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Error loading products'));
+                }
+
+                final products = snapshot.data ?? [];
+                final filtered = products.where((product) {
+                  return searchQuery.isEmpty ||
+                      product['name']
+                          .toString()
+                          .toLowerCase()
+                          .contains(searchQuery.toLowerCase());
+                }).toList();
+
+                if (filtered.isEmpty) {
+                  return const Center(child: Text('No products found.'));
+                }
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: filtered.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.65,
+                  ),
+                  itemBuilder: (context, index) {
+                    final product = filtered[index];
+                    return _buildProductCard(product);
+                  },
+                );
+              },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductCard(Map<String, dynamic> product) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 4),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 📸 Image Placeholder
+          Container(
+            height: 100,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(12),
+              image: product['imageURL'] != null
+                  ? DecorationImage(
+                      image: NetworkImage(product['imageURL']),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            product['name'] ?? 'TITLE DE PRODUIT',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Text(
+                '${product['oldPrice']} DH',
+                style: const TextStyle(
+                  decoration: TextDecoration.lineThrough,
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '${product['price']} DH',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(Icons.star, color: Colors.orange, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                '${product['rating']?.toStringAsFixed(1) ?? '0.0'}',
+                style: const TextStyle(fontSize: 12),
+              ),
+              const Spacer(),
+              CircleAvatar(
+                radius: 12,
+                backgroundColor: kAccent,
+                child: const Icon(Icons.add, size: 16, color: Colors.white),
+              ),
+            ],
           ),
         ],
       ),

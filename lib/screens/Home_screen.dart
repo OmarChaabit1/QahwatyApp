@@ -10,13 +10,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String searchQuery = '';
 
   Future<List<Map<String, dynamic>>> fetchNewArrivals() async {
     QuerySnapshot snapshot = await _firestore.collection('new_arrivals').get();
 
-    return snapshot.docs
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList();
+    final allProducts =
+        snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+    // 🔍 Filter based on search query
+    if (searchQuery.isNotEmpty) {
+      return allProducts.where((product) {
+        final name = product['name']?.toString().toLowerCase() ?? '';
+        return name.contains(searchQuery.toLowerCase());
+      }).toList();
+    }
+
+    return allProducts;
   }
 
   @override
@@ -31,9 +41,16 @@ class _HomeScreenState extends State<HomeScreen> {
             const Text('Robert J. Cartwright',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
+
+            // 🔍 Search Field
             TextField(
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
               decoration: InputDecoration(
-                hintText: 'search for product...',
+                hintText: 'Search for product...',
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.grey[200],
@@ -43,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
             const SizedBox(height: 20),
             const Text('CATEGORIES',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -69,12 +87,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     imagePath: 'images/categories/nettoyage.png'),
               ],
             ),
+
             const SizedBox(height: 20),
             const Text('NEWEST PRODUCTS',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
-            /// 🆕 Fetching and displaying from Firestore
+            /// 🆕 Filtered Results
             FutureBuilder<List<Map<String, dynamic>>>(
               future: fetchNewArrivals(),
               builder: (context, snapshot) {
@@ -83,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 } else if (snapshot.hasError) {
                   return const Text('Error loading products');
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text('No new arrivals');
+                  return const Text('No products found');
                 }
 
                 final products = snapshot.data!;
@@ -96,8 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         name: product['name'] ?? '',
                         price: '${product['price']} DH',
                         oldPrice: '${product['oldPrice']} DH',
-                        imagePath: product['imageURL'] ??
-                            '', // ✅ add a fallback in case it's null
+                        imagePath: product['imageURL'] ?? '',
                         rating: product['rating']?.toDouble() ?? 0.0,
                       );
                     }).toList(),
