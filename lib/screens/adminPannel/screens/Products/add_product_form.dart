@@ -165,8 +165,6 @@ class _AddProductFormState extends State<AddProductForm> {
     }
   }
 
-
-
   void clearForm() {
     nameController.clear();
     priceController.clear();
@@ -234,130 +232,136 @@ class _AddProductFormState extends State<AddProductForm> {
           ),
         ),
         child: Center(
-          child: SingleChildScrollView(
-            child: GlassCard(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      style: TextStyle(color: kText),
-                      decoration: buildInputDecoration("Product Name"),
-                    ),
-                    const SizedBox(height: 20),
-                    selectedImageBytes != null
-                        ? Image.memory(
-                            selectedImageBytes!,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          )
-                        : Text("No image selected",
-                            style: TextStyle(color: kText)),
-                    TextButton.icon(
-                      onPressed: pickImage,
-                      icon: Icon(Icons.image, color: kAccent),
-                      label:
-                          Text("Pick Image", style: TextStyle(color: kAccent)),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: priceController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      style: TextStyle(color: kText),
-                      decoration: buildInputDecoration("Price"),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: oldPriceController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      style: TextStyle(color: kText),
-                      decoration: buildInputDecoration("Old Price"),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: ratingController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      style: TextStyle(color: kText),
-                      decoration: buildInputDecoration("Rating"),
-                    ),
-                    const SizedBox(height: 20),
-                    // Category dropdown
-                    loadingCategories
-                        ? CircularProgressIndicator()
-                        : DropdownButtonFormField<String>(
-                            value: selectedCategory,
-                            decoration: buildInputDecoration("Select Category"),
-                            dropdownColor: kBg,
-                            style: TextStyle(color: kText),
-                            items: categories
-                                .map((cat) => DropdownMenuItem(
-                                      value: cat,
-                                      child: Text(cat),
-                                    ))
-                                .toList(),
-                            onChanged: (val) {
-                              if (val != selectedCategory) {
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 30),
+            child: SingleChildScrollView(
+              child: GlassCard(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 20),
+
+                      TextField(
+                        controller: nameController,
+                        style: TextStyle(color: kText),
+                        decoration: buildInputDecoration("Product Name"),
+                      ),
+                      const SizedBox(height: 20),
+                      selectedImageBytes != null
+                          ? Image.memory(
+                              selectedImageBytes!,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : Text("No image selected",
+                              style: TextStyle(color: kText)),
+                      TextButton.icon(
+                        onPressed: pickImage,
+                        icon: Icon(Icons.image, color: kAccent),
+                        label: Text("Pick Image",
+                            style: TextStyle(color: kAccent)),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: priceController,
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        style: TextStyle(color: kText),
+                        decoration: buildInputDecoration("Price"),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: oldPriceController,
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        style: TextStyle(color: kText),
+                        decoration: buildInputDecoration("Old Price"),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: ratingController,
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        style: TextStyle(color: kText),
+                        decoration: buildInputDecoration("Rating"),
+                      ),
+                      const SizedBox(height: 20),
+                      // Category dropdown
+                      loadingCategories
+                          ? CircularProgressIndicator()
+                          : DropdownButtonFormField<String>(
+                              value: selectedCategory,
+                              decoration:
+                                  buildInputDecoration("Select Category"),
+                              dropdownColor: kBg,
+                              style: TextStyle(color: kText),
+                              items: categories
+                                  .map((cat) => DropdownMenuItem(
+                                        value: cat,
+                                        child: Text(cat),
+                                      ))
+                                  .toList(),
+                              onChanged: (val) {
+                                if (val != selectedCategory) {
+                                  setState(() {
+                                    selectedCategory = val;
+                                    selectedSubcategory = null;
+                                  });
+                                  if (val != null) fetchSubcategories(val);
+                                }
+                              },
+                            ),
+                      const SizedBox(height: 16),
+                      // Subcategory dropdown
+                      loadingSubcategories
+                          ? CircularProgressIndicator()
+                          : DropdownButtonFormField<String>(
+                              value: selectedSubcategory,
+                              decoration:
+                                  buildInputDecoration("Select Subcategory"),
+                              dropdownColor: kBg,
+                              style: TextStyle(color: kText),
+                              items: subcategories
+                                  .map((sub) => DropdownMenuItem(
+                                        value: sub,
+                                        child: Text(sub),
+                                      ))
+                                  .toList(),
+                              onChanged: (val) {
                                 setState(() {
-                                  selectedCategory = val;
-                                  selectedSubcategory = null;
+                                  selectedSubcategory = val;
                                 });
-                                if (val != null) fetchSubcategories(val);
-                              }
-                            },
-                          ),
-                    const SizedBox(height: 16),
-                    // Subcategory dropdown
-                    loadingSubcategories
-                        ? CircularProgressIndicator()
-                        : DropdownButtonFormField<String>(
-                            value: selectedSubcategory,
-                            decoration:
-                                buildInputDecoration("Select Subcategory"),
-                            dropdownColor: kBg,
-                            style: TextStyle(color: kText),
-                            items: subcategories
-                                .map((sub) => DropdownMenuItem(
-                                      value: sub,
-                                      child: Text(sub),
-                                    ))
-                                .toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                selectedSubcategory = val;
-                              });
-                            },
-                          ),
-                    const SizedBox(height: 30),
-                    ElevatedButton.icon(
-                      onPressed: saveProduct,
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        "Save Product",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kAccent,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                        textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        elevation: 10,
-                      ),
-                    )
-                  ],
+                              },
+                            ),
+                      const SizedBox(height: 30),
+                      ElevatedButton.icon(
+                        onPressed: saveProduct,
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          "Save Product",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kAccent,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 14),
+                          textStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          elevation: 10,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -375,12 +379,13 @@ class GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(24),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.all(20),
-          width: MediaQuery.of(context).size.width * 0.85,
+          width: 380,
+          // padding: const EdgeInsets.all(20),
+          // width: MediaQuery.of(context).size.width * 0.85,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(30),

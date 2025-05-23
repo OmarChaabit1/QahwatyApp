@@ -287,7 +287,7 @@ class _EditProductFormState extends State<EditProductForm> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(height: 40),
+                            const SizedBox(height: 20),
                             TextField(
                               controller: nameController,
                               style: TextStyle(color: kText),
