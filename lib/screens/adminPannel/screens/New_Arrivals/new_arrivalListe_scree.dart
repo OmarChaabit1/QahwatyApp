@@ -56,7 +56,7 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFFF5EDE4),
         elevation: 0,
         title: Text("New Arrivals", style: TextStyle(color: kText)),
         centerTitle: true,
@@ -65,7 +65,7 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFF0DDC9), Color(0xFFE6D2BC)],
+            colors: [Colors.white, Colors.white],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -101,72 +101,86 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 10),
-                  child: GlassCard(
-                    child: ListTile(
-                      leading: isValidUrl
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                imageUrl,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(
-                                  Icons.broken_image,
-                                  color: kText.withOpacity(0.6),
-                                ),
-                              ),
-                            )
-                          : Icon(Icons.image_not_supported,
-                              color: kText.withOpacity(0.6)),
-                      title: Text(
-                        productName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: kText,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFFF5EDE4),
+                          blurRadius: 10,
+                          offset: Offset(4, 4),
                         ),
-                      ),
-                      subtitle: (productPrice.isNotEmpty || oldPrice.isNotEmpty)
-                          ? Row(
-                              children: [
-                                if (productPrice.isNotEmpty)
-                                  Text(
-                                    productPrice,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.green[700],
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                      ],
+                    ),
+                    child: GlassCard(
+                      child: ListTile(
+                        leading: isValidUrl
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  imageUrl,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(
+                                    Icons.broken_image,
+                                    color: kText.withOpacity(0.6),
                                   ),
-                                SizedBox(width: 10),
-                                if (oldPrice.isNotEmpty)
-                                  Text(
-                                    oldPrice,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.red,
-                                      decoration: TextDecoration.lineThrough,
-                                      decorationColor: Colors.red,
-                                      decorationThickness: 2,
+                                ),
+                              )
+                            : Icon(Icons.image_not_supported,
+                                color: kText.withOpacity(0.6)),
+                        title: Text(
+                          productName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: kText,
+                          ),
+                        ),
+                        subtitle: (productPrice.isNotEmpty ||
+                                oldPrice.isNotEmpty)
+                            ? Row(
+                                children: [
+                                  if (productPrice.isNotEmpty)
+                                    Text(
+                                      productPrice,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green[700],
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                              ],
-                            )
-                          : null,
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => editProduct(doc),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => deleteProduct(doc.id),
-                          ),
-                        ],
+                                  SizedBox(width: 10),
+                                  if (oldPrice.isNotEmpty)
+                                    Text(
+                                      oldPrice,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                        decoration: TextDecoration.lineThrough,
+                                        decorationColor: Colors.red,
+                                        decorationThickness: 2,
+                                      ),
+                                    ),
+                                ],
+                              )
+                            : null,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () => editProduct(doc),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => deleteProduct(doc.id),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

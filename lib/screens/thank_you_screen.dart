@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messages_apk/screens/tabs_screen.dart';
 
 class ThankYouScreen extends StatelessWidget {
   static const String screenRoute = 'thank_you_screen';
@@ -17,7 +18,13 @@ class ThankYouScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              TabsScreen.screenRoute,
+              (route) => false,
+            );
+          },
         ),
         actions: [
           IconButton(
@@ -38,7 +45,7 @@ class ThankYouScreen extends StatelessWidget {
                 color: Colors.white,
                 width: double.infinity,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 160, horizontal: 24),
+                    const EdgeInsets.symmetric(vertical: 22, horizontal: 24),
                 child: Column(
                   children: [
                     // ✅ checkmark ddisplay -----------

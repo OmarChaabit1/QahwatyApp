@@ -4,6 +4,7 @@ import 'package:messages_apk/shared/widgets/CategoryCard.dart';
 import 'package:messages_apk/shared/widgets/ProductCard.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const screenRoute = '/home';
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Categories/categoriesList_screen.dart';
 import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/new_arrivalListe_scree.dart';
+import 'package:messages_apk/screens/adminPannel/screens/Orders/orderingList_screen.dart';
 
 import 'Products/productList_scree.dart';
 import 'SubCategories/all_Subcategories.dart';
@@ -42,6 +43,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Colors.deepPurple
       ]),
     ),
+    _DashboardItem(
+      title: "Orders",
+      icon: Icons.store,
+      screen: OrdersScreen(),
+      gradient: LinearGradient(
+          colors: [const Color.fromARGB(255, 242, 107, 73), Colors.red]),
+    ),
     // Add more items if needed
   ];
 
@@ -59,7 +67,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.all(16.0),
         child: LayoutBuilder(builder: (context, constraints) {
           int crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
-
           return GridView.builder(
             itemCount: items.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
