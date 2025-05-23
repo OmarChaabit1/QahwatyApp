@@ -80,11 +80,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       ),
       body: favorites.isEmpty
           ? const Center(
-              child: Text(
-                "Aucun produit favori.",
-                style: TextStyle(fontSize: 16, color: kText),
-              ),
-            )
+              child: Image(
+              image: AssetImage('images/empty/noFav.png'),
+              width: 200,
+            ))
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 12),
               itemCount: favorites.length,
