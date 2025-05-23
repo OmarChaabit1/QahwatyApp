@@ -67,16 +67,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('cart');
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Commande envoyée avec succès!')),
-      );
-
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        ThankYouScreen.screenRoute,
-        (route) => false,
-      );
+      Navigator.pushNamed(context, ThankYouScreen.screenRoute);
     } catch (e) {
       setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(

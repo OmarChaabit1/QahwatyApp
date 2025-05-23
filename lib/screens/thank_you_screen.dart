@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
 
 class ThankYouScreen extends StatelessWidget {
-  static const String screenRoute = 'thank_you_screen';
+  static const String screenRoute = '/thank_you_screen';
 
   // palette reused across app
   final Color kBg = const Color(0xFFF0DDC9); // beige

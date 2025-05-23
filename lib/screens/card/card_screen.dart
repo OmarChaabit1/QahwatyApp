@@ -64,7 +64,11 @@ class _CartScreenState extends State<CartScreen> {
           ),
           title: const Text('Votre Panier')),
       body: cartItems.isEmpty
-          ? const Center(child: Text("Votre panier est vide."))
+          ? const Center(
+              child: Image(
+              image: AssetImage('images/empty/emptyCart.png'),
+              width: 200,
+            ))
           : Column(
               children: [
                 Expanded(

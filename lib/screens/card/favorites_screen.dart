@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:messages_apk/screens/tabs_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const Color kText = Color(0xFF333333);
@@ -70,7 +71,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         elevation: 1,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pushNamedAndRemoveUntil(
+            context,
+            TabsScreen.screenRoute,
+            (route) => false,
+          ),
         ),
       ),
       body: favorites.isEmpty
