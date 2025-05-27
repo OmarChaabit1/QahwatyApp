@@ -15,6 +15,8 @@ class AddNewArrivals extends StatefulWidget {
 }
 
 class _AddNewArrivalsState extends State<AddNewArrivals> {
+  final descriptionController = TextEditingController();
+
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final oldPriceController = TextEditingController();
@@ -91,6 +93,7 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
   }
 
   Future<void> saveNewArrival() async {
+    final description = descriptionController.text.trim();
     final name = nameController.text.trim();
     final price = priceController.text.trim();
     final oldPrice = oldPriceController.text.trim();
@@ -136,6 +139,7 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
 
       await FirebaseFirestore.instance.collection('new_arrivals').add({
         'name': name,
+        'description': description,
         'price': price,
         'oldPrice': oldPrice,
         'rating': rating,
@@ -152,6 +156,7 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
   }
 
   void clearForm() {
+    descriptionController.clear();
     nameController.clear();
     priceController.clear();
     oldPriceController.clear();
@@ -228,13 +233,21 @@ class _AddNewArrivalsState extends State<AddNewArrivals> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 20),
-
                       TextField(
                         controller: nameController,
                         style: TextStyle(color: kText),
                         decoration: buildInputDecoration("Product Name"),
                       ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: descriptionController,
+                        style: TextStyle(color: kText),
+                        maxLines: 3,
+                        decoration: buildInputDecoration("Product Description"),
+                      ),
+
                       const SizedBox(height: 20),
+
                       selectedImageBytes != null
                           ? Image.memory(
                               selectedImageBytes!,

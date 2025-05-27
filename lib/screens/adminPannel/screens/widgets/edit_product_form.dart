@@ -20,6 +20,7 @@ class EditProductForm extends StatefulWidget {
 }
 
 class _EditProductFormState extends State<EditProductForm> {
+  final descriptionController = TextEditingController();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final oldPriceController = TextEditingController();
@@ -57,6 +58,8 @@ class _EditProductFormState extends State<EditProductForm> {
 
       if (doc.exists) {
         final data = doc.data()!;
+        descriptionController.text = data['description'] ?? '';
+
         nameController.text = data['name'] ?? '';
         priceController.text = data['price'] ?? '';
         oldPriceController.text = data['oldPrice'] ?? '';
@@ -146,6 +149,8 @@ class _EditProductFormState extends State<EditProductForm> {
   }
 
   Future<void> updateProduct() async {
+    final description = descriptionController.text.trim();
+
     final name = nameController.text.trim();
     final price = priceController.text.trim();
     final oldPrice = oldPriceController.text.trim();
@@ -292,6 +297,14 @@ class _EditProductFormState extends State<EditProductForm> {
                               controller: nameController,
                               style: TextStyle(color: kText),
                               decoration: buildInputDecoration("Product Name"),
+                            ),
+                            const SizedBox(height: 16),
+                            TextField(
+                              controller: descriptionController,
+                              style: TextStyle(color: kText),
+                              maxLines: 3,
+                              decoration:
+                                  buildInputDecoration("Product Description"),
                             ),
                             const SizedBox(height: 20),
                             selectedImageBytes != null

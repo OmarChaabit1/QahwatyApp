@@ -1,7 +1,6 @@
 // ----------------  update_profile_screen.dart  ----------------
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   static const String screenRoute = 'update_profile_screen';
@@ -34,9 +33,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (newName.isNotEmpty) {
         await currentUser.updateDisplayName(newName.trim());
       }
-      if (newEmail.isNotEmpty) {
-        await currentUser.updateEmail(newEmail.trim());
-      }
+      // if (newEmail.isNotEmpty) {
+      //   await currentUser.updateEmail(newEmail.trim());
+      // }
       if (newPassword.isNotEmpty) {
         await currentUser.updatePassword(newPassword.trim());
       }

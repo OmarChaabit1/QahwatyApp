@@ -28,7 +28,7 @@ class AppDrawer extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: Theme.of(context)
               .colorScheme
-              .onBackground, // Couleur du texte définie par le thème
+              .onBackground,
         ),
       ),
       onTap: onTapLink,

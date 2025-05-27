@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/new_arrivalListe_scree.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
@@ -21,6 +20,8 @@ class _AddProductFormState extends State<AddProductForm> {
   final priceController = TextEditingController();
   final oldPriceController = TextEditingController();
   final ratingController = TextEditingController();
+  // ajout d'escriptions
+  final descriptionController = TextEditingController();
 
   String? selectedCategory;
   String? selectedSubcategory;
@@ -99,6 +100,7 @@ class _AddProductFormState extends State<AddProductForm> {
   }
 
   Future<void> saveProduct() async {
+    final description = descriptionController.text.trim();
     final name = nameController.text.trim();
     final price = priceController.text.trim();
     final oldPrice = oldPriceController.text.trim();
@@ -151,6 +153,7 @@ class _AddProductFormState extends State<AddProductForm> {
 
       await FirebaseFirestore.instance.collection('products').add({
         'name': name,
+        'description': description,
         'price': price,
         'oldPrice': oldPrice,
         'rating': rating,
@@ -166,6 +169,7 @@ class _AddProductFormState extends State<AddProductForm> {
   }
 
   void clearForm() {
+    descriptionController.clear();
     nameController.clear();
     priceController.clear();
     oldPriceController.clear();
@@ -249,6 +253,14 @@ class _AddProductFormState extends State<AddProductForm> {
                         decoration: buildInputDecoration("Product Name"),
                       ),
                       const SizedBox(height: 20),
+                      TextField(
+                        controller: descriptionController,
+                        style: TextStyle(color: kText),
+                        maxLines: 3,
+                        decoration: buildInputDecoration("Product Description"),
+                      ),
+                      const SizedBox(height: 16),
+
                       selectedImageBytes != null
                           ? Image.memory(
                               selectedImageBytes!,

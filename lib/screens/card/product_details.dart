@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/card/card_screen.dart';
-import 'package:messages_apk/screens/card/favorites_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Colors as constants

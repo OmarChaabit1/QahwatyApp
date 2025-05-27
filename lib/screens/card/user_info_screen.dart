@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:messages_apk/screens/Home_screen.dart';
-import 'package:messages_apk/screens/thank_you_screen.dart';
+import 'package:messages_apk/screens/card/thank_you_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // ✅ Import Firebase Auth
 
@@ -67,12 +66,24 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('cart');
-      Navigator.pushNamed(context, ThankYouScreen.screenRoute);
+      // Rediriger vers la page de remerciement
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          ThankYouScreen.screenRoute,
+          (route) => false,
+        );
+      }
     } catch (e) {
-      setState(() => isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de la commande: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de la commande : $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 

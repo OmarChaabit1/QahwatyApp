@@ -19,7 +19,6 @@ class SimpleWebNavbarWidget extends StatefulWidget {
 }
 
 class _SimpleWebNavbarWidgetState extends State<SimpleWebNavbarWidget> {
-  late Widget _currentPage;
 
   @override
   void initState() {

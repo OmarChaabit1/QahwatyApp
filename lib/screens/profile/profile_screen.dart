@@ -2,7 +2,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:messages_apk/screens/profile/update_profile_screen.dart';
 import 'package:messages_apk/screens/auth/Welcome_screen.dart';
 

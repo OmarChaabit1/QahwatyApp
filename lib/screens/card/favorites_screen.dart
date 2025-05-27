@@ -101,87 +101,90 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   shadowColor: Colors.black26,
                   child: Padding(
                     padding: const EdgeInsets.all(12),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Product Image
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: item['imageURL'] != null
-                              ? Image.network(
-                                  item['imageURL'],
-                                  width: 90,
-                                  height: 90,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  width: 90,
-                                  height: 90,
-                                  color: Colors.grey.shade300,
-                                  child: const Icon(Icons.image_not_supported,
-                                      size: 40),
-                                ),
-                        ),
-                        const SizedBox(width: 16),
-
-                        // Product details
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['name'] ?? 'Produit',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: kText,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-
-                              // Rating stars + reviews count (optional)
-                              Row(
-                                children: [
-                                  buildRatingStars(rating),
-                                  const SizedBox(width: 8),
-                                  const Text(
-                                    "(200 avis)",
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.black54),
+                    child: Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Product Image
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: item['imageURL'] != null
+                                ? Image.network(
+                                    item['imageURL'],
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    width: 90,
+                                    height: 90,
+                                    color: Colors.grey.shade300,
+                                    child: const Icon(Icons.image_not_supported,
+                                        size: 40),
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-
-                              Text(
-                                '${item['price']} Dh',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  color: kAccent,
-                                ),
-                              ),
-
-                              const SizedBox(height: 6),
-
-                              // Optional description snippet if exists
-                              if (item['description'] != null)
-                                Text(
-                                  item['description'],
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(color: Colors.black54),
-                                ),
-                            ],
                           ),
-                        ),
+                          const SizedBox(width: 16),
 
-                        // Delete button
-                        IconButton(
-                          icon: const Icon(Icons.favorite, color: Colors.red),
-                          onPressed: () => removeFromFavorites(index),
-                        ),
-                      ],
+                          // Product details
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['name'] ?? 'Produit',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: kText,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+
+                                // Rating stars + reviews count (optional)
+                                Row(
+                                  children: [
+                                    buildRatingStars(rating),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      "(200 avis)",
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+
+                                Text(
+                                  '${item['price']} Dh',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: kAccent,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 6),
+
+                                // Optional description snippet if exists
+                                if (item['description'] != null)
+                                  Text(
+                                    item['description'],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        const TextStyle(color: Colors.black54),
+                                  ),
+                              ],
+                            ),
+                          ),
+
+                          // Delete button
+                          IconButton(
+                            icon: const Icon(Icons.favorite, color: Colors.red),
+                            onPressed: () => removeFromFavorites(index),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

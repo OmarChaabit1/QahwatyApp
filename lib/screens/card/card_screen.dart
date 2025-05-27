@@ -167,7 +167,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       const SizedBox(width: 8),
                       TextButton(
-                        onPressed: () {}, // TODO: Apply logic
+                        onPressed: () {},
                         child: const Text("Apply",
                             style: TextStyle(color: kAccent)),
                       ),

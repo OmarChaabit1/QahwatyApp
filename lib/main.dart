@@ -95,10 +95,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:messages_apk/screens/card/thank_you_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:messages_apk/screens/admin/admin_panel_screen.dart';
 import 'package:messages_apk/screens/adminPannel/screens/dashboard_screen.dart';
 import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
@@ -158,8 +158,9 @@ class MyApp extends StatelessWidget {
           ? TabsScreen.screenRoute
           : GetStartedScreen.screenRoute,
       routes: {
+        // thank
+        ThankYouScreen.screenRoute: (context) => ThankYouScreen(),
         // admin
-        AdminPanelScreen.screenRoute: (context) => AdminPanelScreen(),
         TabsScreen.screenRoute: (context) => TabsScreen(),
         GetStartedScreen.screenRoute: (context) => GetStartedScreen(),
         WelcomeScreen.screenRoute: (context) => WelcomeScreen(),

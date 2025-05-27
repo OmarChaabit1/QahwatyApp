@@ -5,7 +5,6 @@ import 'package:messages_apk/screens/auth/registration_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
-import 'package:messages_apk/widgets/my_buttons.dart';
 
 class signInScreen extends StatefulWidget {
   static const String screenRoute = 'sign_in_screen';

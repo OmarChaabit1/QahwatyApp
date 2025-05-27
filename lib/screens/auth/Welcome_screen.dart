@@ -1,11 +1,9 @@
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
 import 'package:messages_apk/screens/passwordProcess/set_new_password.dart';
 import 'package:messages_apk/screens/auth/sign_in_screen.dart';
-import 'package:messages_apk/screens/auth/registration_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/verification_code.dart';
 import 'package:messages_apk/widgets/my_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String screenRoute = 'Welcome_screen';
@@ -41,7 +39,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             SizedBox(height: 30),
             MyButton(
-              color: Color.fromARGB(255, 113, 8, 134)!,
+              color: Color.fromARGB(255, 113, 8, 134),
               title: 'Sign in',
               onPressed: () {
                 Navigator.pushNamed(context, signInScreen.screenRoute);
