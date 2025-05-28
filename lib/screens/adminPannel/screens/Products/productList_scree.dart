@@ -5,9 +5,12 @@ import 'package:messages_apk/screens/adminPannel/screens/Products/add_product_fo
 
 import '../widgets/edit_product_form.dart';
 
-final Color kBg = const Color(0xFFF0DDC9);
-final Color kText = const Color(0xFF333333);
-final Color kAccent = const Color(0xFF71503C);
+final Color kBg = const Color(0xFFFAF3E0); // Soft cream background
+final Color kText = const Color(0xFF1C1C1E); // Dark text
+final Color kAccent = const Color(0xFFE86C4D); // Warm coral accent
+final Color kSecondary = const Color(0xFFFAE3D9); // Light peach
+final Color kCardBackground =
+    const Color(0xFFF5F5F5).withOpacity(0.1); // Transparent glass
 
 class ProductlistScree extends StatefulWidget {
   @override
@@ -67,7 +70,7 @@ class _ProductlistScreeState extends State<ProductlistScree> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.white],
+            colors: [Color(0xFFFFF3E0), Color(0xFFFFE0B2)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -216,9 +219,20 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.white],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            border: Border.all(color: Colors.white.withOpacity(0.3)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: Offset(0, 5),
+              ),
+            ],
           ),
           child: child,
         ),

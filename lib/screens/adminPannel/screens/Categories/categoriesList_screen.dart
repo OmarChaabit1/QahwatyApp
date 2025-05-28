@@ -7,6 +7,8 @@ import 'package:messages_apk/screens/adminPannel/screens/widgets/edit_category_f
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
 final Color kAccent = const Color(0xFF71503C);
+final Color kCardLight =
+    const Color.fromARGB(255, 251, 241, 234); // Light card background
 
 class CategoriesListScreen extends StatefulWidget {
   @override
@@ -177,9 +179,12 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            color: kCardLight,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12, blurRadius: 6, offset: Offset(2, 2)),
+            ],
           ),
           child: child,
         ),

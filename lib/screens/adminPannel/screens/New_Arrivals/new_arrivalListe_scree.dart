@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/add_new_arrivals.dart';
 import 'package:messages_apk/screens/adminPannel/screens/widgets/edit_newArrivals_form.dart';
 
-final Color kBg = const Color(0xFFF0DDC9);
-final Color kText = const Color(0xFF333333);
-final Color kAccent = const Color(0xFF71503C);
+final Color kBg = const Color(0xFFF0DDC9); // Light grey-blue background
+final Color kText = const Color(0xFF1E1E2C); // Dark navy text
+final Color kAccent = const Color(0xFF71503C); // Vivid soft blue
+final Color kCardLight =
+    const Color.fromARGB(255, 251, 241, 234); // Light card background
 
 class NewArrivalsListScreen extends StatefulWidget {
   @override
@@ -40,6 +42,7 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBg,
       extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
         backgroundColor: kAccent,
@@ -56,20 +59,20 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Color(0xFFF5EDE4),
         elevation: 0,
-        title: Text("New Arrivals", style: TextStyle(color: kText)),
+        backgroundColor: kBg,
         centerTitle: true,
-        iconTheme: IconThemeData(color: kText),
+        iconTheme: IconThemeData(color: kAccent),
+        title: Text("New Arrivals", style: TextStyle(color: kText)),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        // decoration: const BoxDecoration(
+        //   gradient: LinearGradient(
+        //     colors: [Colors.white, Colors.white],
+        //     begin: Alignment.topLeft,
+        //     end: Alignment.bottomRight,
+        //   ),
+        // ),
         child: StreamBuilder<QuerySnapshot>(
           stream:
               FirebaseFirestore.instance.collection('new_arrivals').snapshots(),
@@ -102,17 +105,17 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 10),
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFFF5EDE4),
-                          blurRadius: 10,
-                          offset: Offset(4, 4),
-                        ),
-                      ],
-                    ),
+                    // decoration: BoxDecoration(
+                    //   color: Colors.transparent,
+                    //   borderRadius: BorderRadius.circular(20),
+                    //   boxShadow: [
+                    //     BoxShadow(
+                    //       color: Color(0xFFF5EDE4),
+                    //       blurRadius: 10,
+                    //       offset: Offset(4, 4),
+                    //     ),
+                    //   ],
+                    // ),
                     child: GlassCard(
                       child: ListTile(
                         leading: isValidUrl
@@ -201,15 +204,18 @@ class GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(30),
+      // borderRadius: BorderRadius.circular(30),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            color: kCardLight,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12, blurRadius: 6, offset: Offset(2, 2)),
+            ],
           ),
           child: child,
         ),
