@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Categories/categoriesList_screen.dart';
 import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/new_arrivalListe_scree.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Orders/orderingList_screen.dart';
@@ -147,8 +148,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: kBg,
       appBar: AppBar(
-        title: Text("Admin Dashboard",
-            style: TextStyle(fontFamily: 'Nunito', color: kText)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          "Admin Dashboard",
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
         elevation: 0,
         backgroundColor: kBg,
         centerTitle: true,
@@ -178,11 +191,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 4),
                     Text(
                       userName, // dynamic user name from Firestore
-                      style: TextStyle(
-                        fontFamily: 'Nunito',
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.playfairDisplay(
+                        // ✨ Elegant serif font
                         color: kText,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.2,
                       ),
                     ),
                   ],
@@ -227,8 +241,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       value: TimeRange.all, child: Text('All Time')),
                 ],
                 onChanged: onTimeRangeChanged,
-                style: TextStyle(
-                    fontFamily: 'Nunito', color: kText.withOpacity(0.8)),
+                style: GoogleFonts.playfairDisplay(
+                  // ✨ Elegant serif font
+                  fontSize: 16,
+                  color: kText,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
+                ),
               ),
             ),
 
@@ -252,11 +271,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // Sections title
             Text(
               "Sections",
-              style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: kText),
+              style: GoogleFonts.playfairDisplay(
+                // ✨ Elegant serif font
+                color: kText,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.2,
+              ),
             ),
             const SizedBox(height: 16),
             // Dynamic grid of dashboard sections
@@ -329,12 +350,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               Icon(item.icon, color: kAccent, size: 36),
               const SizedBox(height: 8),
-              Text(item.title,
-                  style: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: kText)),
+              Text(
+                item.title,
+                style: GoogleFonts.playfairDisplay(
+                  // ✨ Elegant serif font
+                  color: kText,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
+                ),
+              ),
             ],
           ),
         ),

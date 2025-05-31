@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/card/user_info_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,11 +59,24 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
-            onPressed: () => Navigator.pop(context),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          onPressed: () => Navigator.pop(context),
+        ),
+        elevation: 0,
+        backgroundColor: Color(0xFFF0DDC9),
+        centerTitle: true,
+        title: Text(
+          'Votre Panier',
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
           ),
-          title: const Text('Votre Panier')),
+        ),
+      ),
       body: cartItems.isEmpty
           ? const Center(
               child: Image(

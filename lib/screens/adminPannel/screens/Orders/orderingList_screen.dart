@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
 // import 'dart:html' as html;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -318,7 +319,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
         ),
         backgroundColor: const Color(0xFFF5EDE4),
         elevation: 0,
-        title: Text("Orders", style: TextStyle(color: kText)),
+        title: Text(
+          "Orders",
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),

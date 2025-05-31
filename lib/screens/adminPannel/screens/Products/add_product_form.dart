@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
@@ -223,7 +224,16 @@ class _AddProductFormState extends State<AddProductForm> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Add Product", style: TextStyle(color: kText)),
+        title: Text(
+          "Add Product",
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),

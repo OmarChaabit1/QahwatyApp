@@ -1,16 +1,16 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Products/add_product_form.dart';
 
 import '../widgets/edit_product_form.dart';
 
-final Color kBg = const Color(0xFFFAF3E0); // Soft cream background
-final Color kText = const Color(0xFF1C1C1E); // Dark text
-final Color kAccent = const Color(0xFFE86C4D); // Warm coral accent
-final Color kSecondary = const Color(0xFFFAE3D9); // Light peach
-final Color kCardBackground =
-    const Color(0xFFF5F5F5).withOpacity(0.1); // Transparent glass
+final Color kBg = const Color(0xFFF0DDC9);
+final Color kText = const Color(0xFF333333);
+final Color kAccent = const Color(0xFF71503C);
+final Color kCardLight =
+    const Color.fromARGB(255, 251, 241, 234); // Light card background
 
 class ProductlistScree extends StatefulWidget {
   @override
@@ -47,7 +47,7 @@ class _ProductlistScreeState extends State<ProductlistScree> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: kAccent,
+        backgroundColor: Colors.transparent,
         onPressed: () {
           Navigator.push(
             context,
@@ -61,16 +61,22 @@ class _ProductlistScreeState extends State<ProductlistScree> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Color(0xFFF5EDE4),
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Products", style: TextStyle(color: kText)),
+        title: Text("Products", style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFFFF3E0), Color(0xFFFFE0B2)],
+            colors: [Color(0xFFF0DDC9), Color(0xFFE6D2BC)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -181,15 +187,55 @@ class _ProductlistScreeState extends State<ProductlistScree> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () => editProduct(doc),
-                              tooltip: 'Edit Product',
+                            //   IconButton(
+                            //     icon: Icon(Icons.edit, color: Colors.blue),
+                            //     onPressed: () => editProduct(doc),
+                            //     tooltip: 'Edit Product',
+                            //   ),
+                            //   IconButton(
+                            //     icon: Icon(Icons.delete, color: Colors.red),
+                            //     onPressed: () => deleteProduct(doc.id),
+                            //     tooltip: 'Delete Product',
+                            //   ),
+                            // ],
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () => setState(() => editProduct(doc)),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xFF71503C),
+                                  ),
+                                  padding: EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    size: 14,
+                                  ),
+                                ),
+                              ),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => deleteProduct(doc.id),
-                              tooltip: 'Delete Product',
+                            const SizedBox(width: 5),
+
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    setState(() => deleteProduct(doc.id)),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  padding: EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -219,19 +265,11 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white, Colors.white],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.3)),
+            color: kCardLight,
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
+                  color: Colors.black12, blurRadius: 6, offset: Offset(2, 2)),
             ],
           ),
           child: child,

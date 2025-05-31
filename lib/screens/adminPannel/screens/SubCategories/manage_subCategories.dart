@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ManageSubCategories extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class ManageSubCategories extends StatefulWidget {
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
 final Color kAccent = const Color(0xFF71503C);
+final Color kCardLight =
+    const Color.fromARGB(255, 251, 241, 234); // Light card background
 
 class _ManageSubCategoriesState extends State<ManageSubCategories> {
   String? selectedCategory;
@@ -121,7 +124,13 @@ class _ManageSubCategoriesState extends State<ManageSubCategories> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Manage Subcategories", style: TextStyle(color: kText)),
+        title: Text("Manage Subcategories", style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),
@@ -194,14 +203,14 @@ class _ManageSubCategoriesState extends State<ManageSubCategories> {
       labelStyle: TextStyle(color: kText.withOpacity(0.7)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: kAccent.withOpacity(0.2)),
+        borderSide: BorderSide(color: kCardLight),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: kAccent),
+        borderSide: BorderSide(color: kCardLight),
       ),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.1),
+      fillColor: kCardLight,
     );
   }
 }
@@ -220,9 +229,12 @@ class GlassCard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           width: MediaQuery.of(context).size.width * 0.85,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            color: kCardLight,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12, blurRadius: 6, offset: Offset(2, 2)),
+            ],
           ),
           child: child,
         ),

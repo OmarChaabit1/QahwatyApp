@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddCategoryForm extends StatefulWidget {
@@ -132,7 +133,13 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Add Category", style: TextStyle(color: kText)),
+        title: Text("Add Category",style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),

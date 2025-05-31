@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,9 +67,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favoris'),
-        backgroundColor: Colors.white,
-        elevation: 1,
+        title: Text(
+          'Favoris',
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
+        backgroundColor: Color(0xFFF0DDC9),
+        elevation: 0,
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
           onPressed: () => Navigator.pushNamedAndRemoveUntil(

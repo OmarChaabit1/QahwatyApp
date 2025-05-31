@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/adminPannel/screens/Categories/add_category_form.dart';
 import 'package:messages_apk/screens/adminPannel/screens/widgets/edit_category_form.dart';
 
@@ -63,7 +64,13 @@ class _CategoriesListScreenState extends State<CategoriesListScreen> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Categories", style: TextStyle(color: kText)),
+        title: Text("Categories", style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),
@@ -144,13 +151,52 @@ class _CategoriesListScreenState extends State<CategoriesListScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => editCategory(doc),
+                          // IconButton(
+                          //   icon: Icon(Icons.edit, color: Colors.blue),
+                          //   onPressed: () => editCategory(doc),
+                          // ),
+                          // IconButton(
+                          //   icon: Icon(Icons.delete, color: Colors.red),
+                          //   onPressed: () => deleteCategory(doc.id),
+                          // ),
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () => setState(() => editCategory(doc)),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFF71503C),
+                                ),
+                                padding: EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  size: 14,
+                                ),
+                              ),
+                            ),
                           ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => deleteCategory(doc.id),
+                          const SizedBox(width: 5),
+
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () =>
+                                  setState(() => deleteCategory(doc.id)),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.red,
+                                ),
+                                padding: EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

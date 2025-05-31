@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/adminPannel/screens/SubCategories/manage_subCategories.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
@@ -186,7 +187,16 @@ class _AllSubCategoriesScreenState extends State<AllSubCategoriesScreen> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('All Subcategories', style: TextStyle(color: kText)),
+        title: Text(
+          'All Subcategories',
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),
@@ -226,13 +236,53 @@ class _AllSubCategoriesScreenState extends State<AllSubCategoriesScreen> {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
-                                  onPressed: () => editSubcategory(item),
+                                // IconButton(
+                                //   icon: Icon(Icons.edit, color: Colors.blue),
+                                //   onPressed: () => editSubcategory(item),
+                                // ),
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        setState(() => editSubcategory(item)),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xFF71503C),
+                                      ),
+                                      padding: EdgeInsets.all(6),
+                                      child: Icon(
+                                        Icons.edit,
+                                        color:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                        size: 14,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () => deleteSubcategory(item),
+                                const SizedBox(width: 5),
+                                // IconButton(
+                                //   icon: Icon(Icons.delete, color: Colors.red),
+                                //   onPressed: () => deleteSubcategory(item),
+                                // ),
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        setState(() => deleteSubcategory(item)),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.red,
+                                      ),
+                                      padding: EdgeInsets.all(6),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                        size: 14,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -279,9 +329,12 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            color: kCardLight,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12, blurRadius: 6, offset: Offset(2, 2)),
+            ],
           ),
           child: child,
         ),

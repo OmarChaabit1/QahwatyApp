@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/adminPannel/screens/New_Arrivals/add_new_arrivals.dart';
 import 'package:messages_apk/screens/adminPannel/screens/widgets/edit_newArrivals_form.dart';
 
@@ -9,6 +10,11 @@ final Color kText = const Color(0xFF1E1E2C); // Dark navy text
 final Color kAccent = const Color(0xFF71503C); // Vivid soft blue
 final Color kCardLight =
     const Color.fromARGB(255, 251, 241, 234); // Light card background
+
+// final Color kBg = const Color(0xFF1A1A2E);       // Dark background
+// final Color kText = const Color(0xFFF0EDEB);     // Light text (near white, slightly warm)
+// final Color kAccent = const Color(0xFFD9A76A);   // Warm soft gold accent (dark equivalent of #71503C)
+// final Color kCardLight = const Color(0xFF2E2E3E); // Dark card background with subtle contrast
 
 class NewArrivalsListScreen extends StatefulWidget {
   @override
@@ -54,6 +60,18 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
         },
         child: Icon(Icons.add, color: Colors.white),
       ),
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+      //     onPressed: () => Navigator.pop(context),
+      //   ),
+      //   elevation: 0,
+      //   backgroundColor: kBg,
+      //   centerTitle: true,
+      //   iconTheme: IconThemeData(color: kAccent),
+      //   title: Text("New Arrivals", style: TextStyle(color: kText)),
+      // ),
+      // Inside your widget
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
@@ -63,7 +81,16 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
         backgroundColor: kBg,
         centerTitle: true,
         iconTheme: IconThemeData(color: kAccent),
-        title: Text("New Arrivals", style: TextStyle(color: kText)),
+        title: Text(
+          "New Arrivals",
+          style: GoogleFonts.playfairDisplay(
+            // ✨ Elegant serif font
+            color: kText,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
       ),
       body: Container(
         // decoration: const BoxDecoration(
@@ -119,22 +146,38 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
                     child: GlassCard(
                       child: ListTile(
                         leading: isValidUrl
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  imageUrl,
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Icon(
-                                    Icons.broken_image,
-                                    color: kText.withOpacity(0.6),
+                            ? Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(
+                                      0.1), // light transparent background
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      offset: Offset(1, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) => Icon(
+                                      Icons.broken_image,
+                                      color: kText.withOpacity(0.6),
+                                    ),
                                   ),
                                 ),
                               )
-                            : Icon(Icons.image_not_supported,
-                                color: kText.withOpacity(0.6)),
+                            : Icon(
+                                Icons.image_not_supported,
+                                color: kText.withOpacity(0.6),
+                              ),
                         title: Text(
                           productName,
                           style: TextStyle(
@@ -174,13 +217,52 @@ class _NewArrivalsListScreenState extends State<NewArrivalsListScreen> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () => editProduct(doc),
+                            // IconButton(
+                            //   icon: Icon(Icons.edit, color: Colors.blue),
+                            //   onPressed: () => editProduct(doc),
+                            // ),
+                            // IconButton(
+                            //   icon: Icon(Icons.delete, color: Colors.red),
+                            //   onPressed: () => deleteProduct(doc.id),
+                            // ),
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () => setState(() => editProduct(doc)),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xFF71503C),
+                                  ),
+                                  padding: EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    size: 14,
+                                  ),
+                                ),
+                              ),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => deleteProduct(doc.id),
+                            const SizedBox(width: 5),
+
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    setState(() => deleteProduct(doc.id)),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  padding: EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
