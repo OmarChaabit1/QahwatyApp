@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messages_apk/screens/card/thank_you_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // ✅ Import Firebase Auth
+import 'package:firebase_auth/firebase_auth.dart';
 
 const Color kAccent = Color(0xFF71503C);
 
@@ -27,13 +27,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   String email = '';
   String phone = '';
   String address = '';
-
   bool isLoading = false;
   String? selectedCity;
+  String selectedDeliverySpeed = '1 H';
 
-  final List<String> cities = [
-    'Tantan',
-  ];
+  final List<String> cities = ['Tantan'];
+  final List<String> deliveryOptions = ['1 H', '24 H', '48 H'];
 
   @override
   void initState() {
@@ -57,6 +56,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         'email': email,
         'phone': phone,
         'address': address,
+        'city': selectedCity,
+        'deliverySpeed': selectedDeliverySpeed,
         'totalPrice': widget.totalPrice,
         'products': widget.cartItems,
         'orderDate': Timestamp.now(),
@@ -66,7 +67,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('cart');
-      // Rediriger vers la page de remerciement
+
       if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -103,17 +104,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             children: [
               const SizedBox(height: 20),
               Image.asset(
-                'images/logo.png', // ✅ Add your logo asset
+                'images/logo.png',
                 height: 120,
               ),
-              const SizedBox(height: 10),
-              // const Text(
-              //   "Set Your Location :",
-              //   style: TextStyle(
-              //     fontSize: 18,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
               const SizedBox(height: 10),
               Expanded(
                 child: Container(
@@ -136,7 +129,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     key: _formKey,
                     child: ListView(
                       children: [
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         _buildTextField("Address", (val) => address = val!),
                         DropdownButtonFormField<String>(
                           value: selectedCity,
@@ -167,9 +160,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               ? 'Please select a city'
                               : null,
                         ),
-                        SizedBox(height: 20),
-                        _buildTextField("Number", (val) => phone = val!,
-                            keyboardType: TextInputType.phone, hint: "+212"),
+                        const SizedBox(height: 20),
+                        _buildTextField(
+                          "Number",
+                          (val) => phone = val!,
+                          keyboardType: TextInputType.phone,
+                          hint: "+212",
+                        ),
+                        const SizedBox(height: 30),
+                        _buildDeliveryOptions(),
                         const SizedBox(height: 30),
                         isLoading
                             ? const Center(child: CircularProgressIndicator())
@@ -185,9 +184,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   elevation: 5,
                                 ),
                                 child: const Text(
-                                  'CONFIRM',
+                                  'CONTINUE',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                       ],
@@ -202,8 +203,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     );
   }
 
-  Widget _buildTextField(String label, Function(String?) onSaved,
-      {TextInputType keyboardType = TextInputType.text, String? hint}) {
+  Widget _buildTextField(
+    String label,
+    Function(String?) onSaved, {
+    TextInputType keyboardType = TextInputType.text,
+    String? hint,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
@@ -222,6 +227,39 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             (value == null || value.isEmpty) ? 'Required field' : null,
         onSaved: onSaved,
       ),
+    );
+  }
+
+  Widget _buildDeliveryOptions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Selectioner Livraison Rapidité",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: deliveryOptions.map((option) {
+            return Row(
+              children: [
+                Radio<String>(
+                  value: option,
+                  groupValue: selectedDeliverySpeed,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDeliverySpeed = value!;
+                    });
+                  },
+                  activeColor: Colors.orange,
+                ),
+                Text(option),
+              ],
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

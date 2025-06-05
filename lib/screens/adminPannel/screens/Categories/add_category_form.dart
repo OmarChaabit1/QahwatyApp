@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 class AddCategoryForm extends StatefulWidget {
   @override
@@ -37,23 +38,80 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
     }
   }
 
-  // void addCategory() async {
-  //   final name = nameController.text.trim();
-  //   if (name.isEmpty) {
-  //     showError('Please enter a category name.');
-  //     return;
-  //   }
+  void showToast(BuildContext context, String title, String description,
+      ToastificationType type) {
+    Color primaryColor;
+    Color backgroundColor;
+    IconData icon;
 
-  //   await FirebaseFirestore.instance.collection('categories').add({
-  //     'name': name,
-  //     'subcategories': subcategories,
-  //   });
+    switch (type) {
+      case ToastificationType.success:
+        primaryColor = const Color(0xFF4CAF50);
+        backgroundColor = Colors.white;
+        icon = Icons.check_circle;
+        break;
+      case ToastificationType.info:
+        primaryColor = Colors.purple;
+        backgroundColor = Colors.white;
+        icon = Icons.info_outline;
+        break;
+      case ToastificationType.warning:
+        primaryColor = const Color(0xFFFFC107);
+        backgroundColor = Colors.white;
+        icon = Icons.warning_amber;
+        break;
+      default:
+        primaryColor = const Color(0xFFF44336);
+        backgroundColor = Colors.white;
+        icon = Icons.error;
+    }
 
-  //   nameController.clear();
-  //   subController.clear();
-  //   setState(() => subcategories.clear());
-  //   showSuccess('Category added!');
-  // }
+    toastification.show(
+      context: context,
+      type: type,
+      style: ToastificationStyle.flatColored,
+      autoCloseDuration: const Duration(seconds: 4),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'Nunito',
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+      description: Text(
+        description,
+        style: const TextStyle(
+          fontFamily: 'Nunito',
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
+      ),
+      alignment: Alignment.bottomRight,
+      animationDuration: const Duration(milliseconds: 300),
+      icon: Icon(icon),
+      showIcon: true,
+      primaryColor: primaryColor,
+      backgroundColor: backgroundColor,
+      // foregroundColor: Colors.black,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 12,
+          offset: const Offset(0, 8),
+        ),
+      ],
+      showProgressBar: true,
+      closeButtonShowType: CloseButtonShowType.onHover,
+      closeOnClick: false,
+      pauseOnHover: true,
+      dragToClose: true,
+      applyBlurEffect: true,
+    );
+  }
 
   Future<void> addCategory() async {
     final name = nameController.text.trim();
@@ -61,7 +119,8 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
     final supabase = Supabase.instance.client;
 
     if (selectedImageBytes == null || selectedImageBytes!.isEmpty) {
-      showError('Please select a valid image.');
+      showToast(context, 'Image Missing', 'Please select a valid image.',
+          ToastificationType.error);
       return;
     }
 
@@ -102,24 +161,36 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
         selectedImageBytes = null;
       });
 
-      showSuccess('Category added successfully!');
+      showToast(context, 'Success', 'Category added successfully!',
+          ToastificationType.success);
     } catch (e) {
-      showError('Failed to add category: $e');
+      showToast(context, 'Error', 'Failed to add category: $e',
+          ToastificationType.error);
     }
   }
 
   void showError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      backgroundColor: Colors.red,
-    ));
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      // style: ToastificationStyle.fill, // or ToastificationStyle.flat
+      title: Text(msg),
+      alignment: Alignment.topRight,
+      autoCloseDuration: Duration(seconds: 3),
+      animationDuration: Duration(milliseconds: 300),
+    );
   }
 
   void showSuccess(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      backgroundColor: Colors.green,
-    ));
+    toastification.show(
+      context: context,
+      type: ToastificationType.success,
+      // style: ToastificationStyle.fill,
+      title: Text(msg),
+      alignment: Alignment.topRight,
+      autoCloseDuration: Duration(seconds: 3),
+      animationDuration: Duration(milliseconds: 300),
+    );
   }
 
   @override
@@ -133,13 +204,16 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Add Category",style: GoogleFonts.playfairDisplay(
+        title: Text(
+          "Add Category",
+          style: GoogleFonts.playfairDisplay(
             // ✨ Elegant serif font
             color: kText,
             fontSize: 22,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
-          ),),
+          ),
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),
@@ -210,6 +284,11 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                                       Icon(Icons.close, color: Colors.white),
                                   onDeleted: () {
                                     setState(() => subcategories.remove(sub));
+                                    showToast(
+                                        context,
+                                        'Success',
+                                        'Subcategory removed successfully!',
+                                        ToastificationType.success);
                                   },
                                 ))
                             .toList(),

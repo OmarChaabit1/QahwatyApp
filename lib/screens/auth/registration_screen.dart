@@ -318,18 +318,12 @@ class _registrationScreenState extends State<registrationScreen> {
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/logo.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
                 child: Column(
                   children: [
                     SizedBox(height: 40),
                     Image.asset(
                       'images/logo.png',
-                      height: 120,
+                      height: 180,
                     ),
                     SizedBox(height: 10),
                   ],
@@ -458,7 +452,7 @@ class _registrationScreenState extends State<registrationScreen> {
                     // Bouton Google Sign In
                     ElevatedButton.icon(
                       icon: Image.asset(
-                        'images/logo.png', // ajoute un logo Google dans assets
+                        'images/google_logo.png', // ajoute un logo Google dans assets
                         height: 24,
                         width: 24,
                       ),

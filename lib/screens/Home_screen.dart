@@ -6,6 +6,9 @@ import 'package:messages_apk/shared/widgets/ProductCard.dart';
 
 class HomeScreen extends StatefulWidget {
   static const screenRoute = '/home';
+  final VoidCallback? onCartUpdated; // <-- add this
+
+  HomeScreen({Key? key, this.onCartUpdated}) : super(key: key);
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -160,12 +163,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         },
+                        // child: ProductCard(
+                        //   name: product['name'] ?? '',
+                        //   price: '${product['price']} DH',
+                        //   oldPrice: '${product['oldPrice']} DH',
+                        //   imagePath: product['imageURL'] ?? '',
+                        //   rating: product['rating']?.toDouble() ?? 0.0,
+                        // ),
                         child: ProductCard(
-                          name: product['name'] ?? '',
-                          price: '${product['price']} DH',
-                          oldPrice: '${product['oldPrice']} DH',
-                          imagePath: product['imageURL'] ?? '',
-                          rating: product['rating']?.toDouble() ?? 0.0,
+                          product: product,
                         ),
                       );
                     }).toList(),

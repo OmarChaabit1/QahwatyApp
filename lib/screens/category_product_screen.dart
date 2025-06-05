@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messages_apk/screens/card/product_details.dart';
+import 'package:messages_apk/shared/widgets/ProductCard.dart';
 
 final Color kBg = const Color(0xFFF0DDC9);
 final Color kText = const Color(0xFF333333);
@@ -123,13 +124,14 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                 }
 
                 return GridView.builder(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.only(
+                      top: 8, left: 8, right: 8), // removed bottom
                   itemCount: filtered.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 0.65,
+                    childAspectRatio: 0.75, // less tall = less white space
                   ),
                   itemBuilder: (context, index) {
                     final product = filtered[index];
@@ -232,90 +234,18 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                ProductDetailScreen(product: product), // 👈 You create this
+            builder: (_) => ProductDetailScreen(product: product),
           ),
         );
       },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 4),
-            )
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(12),
-                image: product['imageURL'] != null
-                    ? DecorationImage(
-                        image: NetworkImage(product['imageURL']),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              product['name'] ?? 'TITLE DE PRODUIT',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Text(
-                  '${product['oldPrice']} DH',
-                  style: const TextStyle(
-                    decoration: TextDecoration.lineThrough,
-                    color: Colors.red,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '${product['price']} DH',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                const Icon(Icons.star, color: Colors.orange, size: 16),
-                const SizedBox(width: 4),
-                Text(
-                  '${product['rating']?.toStringAsFixed(1) ?? '0.0'}',
-                  style: const TextStyle(fontSize: 12),
-                ),
-                const Spacer(),
-                CircleAvatar(
-                  radius: 12,
-                  backgroundColor: kAccent,
-                  child: const Icon(Icons.add, size: 16, color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      // child: ProductCard(
+      //   name: product['name'] ?? '',
+      //   price: '${product['price']} DH',
+      //   oldPrice: '${product['oldPrice']} DH',
+      //   imagePath: product['imageURL'] ?? '',
+      //   rating: product['rating']?.toDouble() ?? 0.0,
+      // ),
+      child: ProductCard(product: product),
     );
   }
 }

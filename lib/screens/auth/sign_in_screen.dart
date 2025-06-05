@@ -59,18 +59,12 @@ class _signInScreenState extends State<signInScreen> {
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/logo.png'), // Pattern image
-                    fit: BoxFit.cover,
-                  ),
-                ),
                 child: Column(
                   children: [
                     SizedBox(height: 40),
                     Image.asset(
                       'images/logo.png', // Logo with coffee cup
-                      height: 120,
+                      height: 180,
                     ),
                     SizedBox(height: 10),
                   ],
@@ -279,12 +273,12 @@ class _signInScreenState extends State<signInScreen> {
                     SizedBox(height: 20),
                     ElevatedButton.icon(
                       icon: Image.asset(
-                        'images/logo.png', // Add your Google logo asset or use an Icon widget
+                        'images/google_logo.png', // Add your Google logo asset or use an Icon widget
                         height: 24,
                       ),
                       label: Text(
                         'Sign in with Google',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                       onPressed: () async {
                         setState(() => showSpinner = true);
@@ -304,12 +298,14 @@ class _signInScreenState extends State<signInScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF4285F4), // Google blue color
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
                         padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
                         minimumSize: Size(double.infinity, 50),
+                        side: BorderSide(color: Colors.grey),
                       ),
                     ),
                   ],

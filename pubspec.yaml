@@ -66,6 +66,7 @@ dependencies:
   path_provider: ^2.1.5
   palette_generator: ^0.3.3+7
   google_fonts: ^6.2.1
+  toastification: ^2.0.3
 
 
 dev_dependencies:
