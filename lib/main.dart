@@ -96,6 +96,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:messages_apk/screens/card/thank_you_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/Privacy_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/about_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/rate_app_screen.dart.dart';
+import 'package:messages_apk/screens/profile/profile_details/share_app_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/terms_conditions_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +108,7 @@ import 'package:messages_apk/screens/adminPannel/screens/dashboard_screen.dart';
 import 'package:messages_apk/screens/notification_screen.dart';
 import 'package:messages_apk/screens/passwordProcess/Forgot_password.dart';
 import 'package:messages_apk/screens/passwordProcess/get_started_screen.dart';
-import 'package:messages_apk/screens/profile/help_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/help_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/profile/update_profile_screen.dart';
 import 'package:messages_apk/screens/dashboard_screen.dart';
@@ -177,7 +182,14 @@ class MyApp extends StatelessWidget {
             ProfileScreen(currentUser: FirebaseAuth.instance.currentUser!),
         UpdateProfileScreen.screenRoute: (context) => UpdateProfileScreen(
             currentUser: FirebaseAuth.instance.currentUser!),
+
+        // profile process
+        AboutScreen.screenRoute: (context) => AboutScreen(),
+        TermsConditionsScreen.screenRoute: (context) => TermsConditionsScreen(),
         HelpScreen.screenRoute: (context) => HelpScreen(),
+        PrivacyPolicyScreen.screenRoute: (context) => PrivacyPolicyScreen(),
+        RateAppScreen.screenRoute: (context) => RateAppScreen(),
+        ShareAppScreen.screenRoute: (context) => ShareAppScreen(),
       },
     );
   }

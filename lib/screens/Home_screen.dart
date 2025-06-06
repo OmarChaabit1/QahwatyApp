@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:messages_apk/screens/card/product_details.dart';
 import 'package:messages_apk/shared/widgets/CategoryCard.dart';
 import 'package:messages_apk/shared/widgets/ProductCard.dart';
@@ -16,6 +18,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String searchQuery = '';
+
+  // bach ndiro display for the  username
+  String userName = "";
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName(); // Fetch username when the widget initializes
+  }
+
+  Future<void> fetchUserName() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
+    final userDoc =
+        await _firestore.collection('users').doc(currentUser.uid).get();
+
+    if (userDoc.exists) {
+      setState(() {
+        userName = userDoc.data()?['name'] ??
+            'User'; // Use data()? and null-aware operator
+      });
+    } else {
+      setState(() {
+        userName = 'User';
+      });
+    }
+  }
 
   Future<List<Map<String, dynamic>>> fetchNewArrivals() async {
     QuerySnapshot snapshot = await _firestore.collection('new_arrivals').get();
@@ -50,8 +79,18 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text('Welcome back,',
                 style: TextStyle(fontSize: 16, color: Colors.black54)),
-            const Text('Robert J. Cartwright',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            // const Text('Robert J. Cartwright',
+            //     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              'Mr.$userName', // dynamic user name from Firestore
+              style: GoogleFonts.playfairDisplay(
+                color: kText,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.2,
+              ),
+            ),
+
             const SizedBox(height: 10),
 
             // 🔍 Search Field
@@ -74,31 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             const SizedBox(height: 20),
-            // const Text('CATEGORIES',
-            //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // const SizedBox(height: 10),
-            // GridView.count(
-            //   shrinkWrap: true,
-            //   crossAxisCount: 3,
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   children: const [
-            //     CategoryCard(
-            //         title: 'COFFEE', imagePath: 'images/categories/coffee.png'),
-            //     CategoryCard(
-            //         title: 'TEA', imagePath: 'images/categories/tea.png'),
-            //     CategoryCard(
-            //         title: 'CHOCOLAT',
-            //         imagePath: 'images/categories/chocolate.png'),
-            //     CategoryCard(
-            //         title: 'SUGAR', imagePath: 'images/categories/sugar.png'),
-            //     CategoryCard(
-            //         title: 'GOBELETS',
-            //         imagePath: 'images/categories/goblets.png'),
-            //     CategoryCard(
-            //         title: 'NETTOYAGE',
-            //         imagePath: 'images/categories/nettoyage.png'),
-            //   ],
-            // ),
 
             const Text('CATEGORIES',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),

@@ -2,8 +2,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:messages_apk/screens/profile/profile_details/Privacy_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/about_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/rate_app_screen.dart.dart';
+import 'package:messages_apk/screens/profile/profile_details/share_app_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/terms_conditions_screen.dart';
 import 'package:messages_apk/screens/profile/update_profile_screen.dart';
 import 'package:messages_apk/screens/auth/Welcome_screen.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:toastification/toastification.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String screenRoute = 'profile_screen';
@@ -135,27 +142,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'About',
                   icon: Icons.help_outline,
                   iconColor: Colors.purple.shade300,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.pushNamed(context, AboutScreen.screenRoute);
+                  }),
               _ProfileRow(
                   title: 'Terms & Conditions',
                   icon: Icons.info,
                   iconColor: Colors.blue,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, TermsConditionsScreen.screenRoute);
+                  }),
               _ProfileRow(
                   title: 'Privacy Policy',
                   icon: Icons.lock_outline,
                   iconColor: Colors.red,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, PrivacyPolicyScreen.screenRoute);
+                  }),
               _ProfileRow(
                   title: 'Rate This App',
                   icon: Icons.star_border,
                   iconColor: Colors.deepPurple,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.pushNamed(context, RateAppScreen.screenRoute);
+                  }),
               _ProfileRow(
-                  title: 'Share This App',
-                  icon: Icons.share_outlined,
-                  iconColor: Colors.pink,
-                  onTap: () {}),
+                title: 'Share This App',
+                icon: Icons.share_outlined,
+                iconColor: Colors.pink,
+                onTap: () async {
+                  const shareText =
+                      'Check out this amazing app! Download it here: https://yourapp.link';
+                  await Share.share(shareText);
+
+                  toastification.show(
+                    context: context,
+                    type: ToastificationType.success,
+                    title: const Text('Thanks for sharing!'),
+                    description: const Text('You’re helping us grow.'),
+                    alignment: Alignment.bottomRight,
+                    autoCloseDuration: const Duration(seconds: 3),
+                  );
+                },
+              ),
 
               const SizedBox(height: 12),
               // -------- Logout -----------

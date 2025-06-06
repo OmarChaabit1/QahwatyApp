@@ -1,6 +1,6 @@
 import 'package:messages_apk/screens/auth/Welcome_screen.dart';
 import 'package:messages_apk/screens/notification_screen.dart';
-import 'package:messages_apk/screens/profile/help_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/help_screen.dart';
 import 'package:messages_apk/screens/profile/profile_screen.dart';
 import 'package:messages_apk/screens/tabs_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

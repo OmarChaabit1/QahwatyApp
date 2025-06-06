@@ -83,165 +83,218 @@ class _CartScreenState extends State<CartScreen> {
               image: AssetImage('images/empty/emptyCart.png'),
               width: 200,
             ))
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: cartItems.length,
-                    itemBuilder: (context, index) {
-                      final item = cartItems[index];
-                      final price = _toDouble(item['price']);
-                      final quantity = _toDouble(item['quantity']);
+          : Container(
+              color: const Color(0xFFFDF7F1),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        final item = cartItems[index];
+                        final price = _toDouble(item['price']);
+                        final quantity = _toDouble(item['quantity']);
 
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        elevation: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
+                        return Card(
+                          color: Colors.white,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (item['imageURL'] != null)
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(item['imageURL'],
+                                        width: 70,
+                                        height: 70,
+                                        fit: BoxFit.cover),
+                                  ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(item['name'] ?? 'Produit',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: kText,
+                                          )),
+                                      const SizedBox(height: 4),
+                                      Text('${price.toStringAsFixed(2)} Dh',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          )),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                                Icons.remove_circle_outline),
+                                            onPressed: () {
+                                              if (quantity > 1) {
+                                                setState(() =>
+                                                    item['quantity'] =
+                                                        quantity - 1);
+                                                _saveCart();
+                                              }
+                                            },
+                                          ),
+                                          Text(
+                                            quantity.toInt().toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                                Icons.add_circle_outline),
+                                            onPressed: () {
+                                              setState(() => item['quantity'] =
+                                                  quantity + 1);
+                                              _saveCart();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    setState(() => cartItems.removeAt(index));
+                                    _saveCart();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  // Padding(
+                  //   padding:
+                  //       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.white,
+                  //       borderRadius: BorderRadius.circular(14),
+                  //       border: Border.all(color: Colors.grey.shade200),
+                  //     ),
+                  //     padding: const EdgeInsets.symmetric(
+                  //         horizontal: 12, vertical: 10),
+                  //     child: Row(
+                  //       children: [
+                  //         Expanded(
+                  //           child: TextField(
+                  //             decoration: InputDecoration(
+                  //               hintText: "Enter Discount Code",
+                  //               hintStyle: TextStyle(color: Colors.grey[600]),
+                  //               border: InputBorder.none,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         TextButton(
+                  //           onPressed: () {},
+                  //           child: const Text("Apply",
+                  //               style: TextStyle(
+                  //                 color: kAccent,
+                  //                 fontWeight: FontWeight.bold,
+                  //               )),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              if (item['imageURL'] != null)
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(item['imageURL'],
-                                      width: 60, height: 60),
-                                ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(item['name'] ?? 'Produit',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 4),
-                                    Text('${price.toStringAsFixed(2)} Dh'),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon:
-                                        const Icon(Icons.remove_circle_outline),
-                                    onPressed: () {
-                                      if (quantity > 1) {
-                                        setState(() =>
-                                            item['quantity'] = quantity - 1);
-                                        _saveCart();
-                                      }
-                                    },
-                                  ),
-                                  Text(quantity.toInt().toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  IconButton(
-                                    icon: const Icon(Icons.add_circle_outline),
-                                    onPressed: () {
-                                      setState(() =>
-                                          item['quantity'] = quantity + 1);
-                                      _saveCart();
-                                    },
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  setState(() => cartItems.removeAt(index));
-                                  _saveCart();
-                                },
-                              ),
+                              const Text("SubTotal",
+                                  style: TextStyle(fontSize: 16)),
+                              Text('${totalPrice.toStringAsFixed(2)} Dh',
+                                  style: const TextStyle(fontSize: 16)),
                             ],
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: "Enter Discount Code",
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                          const Divider(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Total",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18)),
+                              Text('${totalPrice.toStringAsFixed(2)} Dh',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18)),
+                            ],
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text("Apply",
-                            style: TextStyle(color: kAccent)),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("SubTotal",
-                              style: TextStyle(fontSize: 16)),
-                          Text('${totalPrice.toStringAsFixed(2)} Dh',
-                              style: const TextStyle(fontSize: 16)),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Total",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18)),
-                          Text('${totalPrice.toStringAsFixed(2)} Dh',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18)),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserInfoScreen(
-                              cartItems: cartItems, totalPrice: totalPrice),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserInfoScreen(
+                                cartItems: cartItems, totalPrice: totalPrice),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kAccent,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                    child: const Text(
-                      'Check Out',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                        minimumSize: const Size.fromHeight(56),
+                      ),
+                      child: const Text(
+                        'Proceed to Checkout',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }

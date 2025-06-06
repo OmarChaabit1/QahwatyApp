@@ -67,6 +67,8 @@ dependencies:
   palette_generator: ^0.3.3+7
   google_fonts: ^6.2.1
   toastification: ^2.0.3
+  share_plus: ^11.0.0
+  path: ^1.9.0
 
 
 dev_dependencies:

@@ -26,12 +26,6 @@ class ThankYouScreen extends StatelessWidget {
             );
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black87),
-            onPressed: () {},
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:messages_apk/screens/card/card_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Colors as constants
 const Color kBg = Color(0xFFF0DDC9);
 const Color kText = Color(0xFF333333);
 const Color kAccent = Color(0xFF71503C);
@@ -46,28 +45,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         favoritesString != null ? jsonDecode(favoritesString) : [];
 
     if (!isFavorite) {
-      final newFavorite = {
+      currentFavorites.add({
         'id': widget.product['id'],
         'name': widget.product['name'],
         'price': widget.product['price'],
         'imageURL': widget.product['imageURL'],
-      };
-      currentFavorites.add(newFavorite);
-      await prefs.setString('favorites', jsonEncode(currentFavorites));
-
-      setState(() {
-        isFavorite = true;
       });
+      await prefs.setString('favorites', jsonEncode(currentFavorites));
     } else {
-      // Remove the product from favorites by id
       currentFavorites
           .removeWhere((item) => item['id'] == widget.product['id']);
       await prefs.setString('favorites', jsonEncode(currentFavorites));
-
-      setState(() {
-        isFavorite = false;
-      });
     }
+
+    setState(() => isFavorite = !isFavorite);
   }
 
   @override
@@ -106,94 +97,86 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Product Image
-            Center(
-              child: Container(
-                height: 200,
-                width: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  image: product['imageURL'] != null
-                      ? DecorationImage(
-                          image: NetworkImage(product['imageURL']),
-                          fit: BoxFit.contain,
-                        )
-                      : null,
-                ),
+            Container(
+              height: 250,
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                image: product['imageURL'] != null
+                    ? DecorationImage(
+                        image: NetworkImage(product['imageURL']),
+                        fit: BoxFit.contain,
+                      )
+                    : null,
               ),
             ),
-            const SizedBox(height: 16),
+
+            // Title and Price
             Text(
-              product['name'] ?? 'Titre de Produit',
+              product['name'] ?? 'Produit',
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: kText,
               ),
+              textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 8),
             Text(
               '${product['price'] ?? '0.00'} Dh',
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
                 color: kAccent,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
+
+            // Rating
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.orange, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${product['rating']?.toStringAsFixed(1) ?? "4.0"}',
-                        style: const TextStyle(color: Colors.orange),
-                      ),
-                      const SizedBox(width: 4),
-                      const Text("(200 avis)",
-                          style:
-                              TextStyle(fontSize: 12, color: Colors.black54)),
-                    ],
-                  ),
-                ),
-                const Spacer(),
+                const Icon(Icons.star, color: Colors.orange, size: 20),
+                const SizedBox(width: 4),
                 Text(
-                  'Vendeur : ${product['seller'] ?? 'Non défini'}',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                )
+                  '${product['rating']?.toStringAsFixed(1) ?? "4.0"}',
+                  style: const TextStyle(color: Colors.orange),
+                ),
+                const SizedBox(width: 6),
+                const Text("(200 avis)",
+                    style: TextStyle(fontSize: 12, color: Colors.black54)),
               ],
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+            const SizedBox(height: 20),
+
+            // Description Title
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Description",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: kText,
+                ),
               ),
-              child: const Text("Description",
-                  style: TextStyle(color: Colors.white)),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
+
+            // Description Content
             Text(
               product['description'] ??
                   "Ce produit est conçu pour hydrater, protéger et renforcer votre peau grâce à une formule riche et efficace.",
-              style: const TextStyle(color: kText),
+              style: const TextStyle(fontSize: 14, color: kText),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -205,11 +188,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
         child: Row(
           children: [
-            // Quantity
+            // Quantity Selector
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: kAccent),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 children: [
@@ -229,17 +212,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             const SizedBox(width: 16),
+
+            // Add to Cart Button
             Expanded(
               child: ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
-
                   final String? cartString = prefs.getString('cart');
                   List<Map<String, dynamic>> cart = [];
 
                   if (cartString != null) {
-                    final List<dynamic> decodedList = jsonDecode(cartString);
-                    cart = decodedList
+                    final List<dynamic> decoded = jsonDecode(cartString);
+                    cart = decoded
                         .map((item) => Map<String, dynamic>.from(item))
                         .toList();
                   }
@@ -252,10 +236,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     'quantity': quantity,
                   };
 
-                  int existingIndex = cart
+                  int index = cart
                       .indexWhere((item) => item['id'] == productToAdd['id']);
-                  if (existingIndex >= 0) {
-                    cart[existingIndex]['quantity'] += quantity;
+
+                  if (index >= 0) {
+                    cart[index]['quantity'] += quantity;
                   } else {
                     cart.add(productToAdd);
                   }
@@ -264,15 +249,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text('${product['name']} ajouté au panier')),
+                      content: Text('${product['name']} ajouté au panier'),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text("Ajouter au Panier",
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Ajouter au Panier",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
             ),
           ],

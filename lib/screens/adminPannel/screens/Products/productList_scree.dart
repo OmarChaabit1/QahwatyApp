@@ -63,13 +63,16 @@ class _ProductlistScreeState extends State<ProductlistScree> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Products", style: GoogleFonts.playfairDisplay(
+        title: Text(
+          "Products",
+          style: GoogleFonts.playfairDisplay(
             // ✨ Elegant serif font
             color: kText,
             fontSize: 22,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
-          ),),
+          ),
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: kText),
       ),

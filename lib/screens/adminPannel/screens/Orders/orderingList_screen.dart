@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 final Color kBg = Color(0xFFF0DDC9);
 final Color kText = Color(0xFF333333);
 final Color kAccent = Color(0xFF71503C);
+final Color kCardLight = const Color.fromARGB(255, 251, 241, 234);
 
 class OrdersScreen extends StatefulWidget {
   static const screenRoute = '/adminPannel/orderingList_screen';
@@ -317,12 +318,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: const Color(0xFFF5EDE4),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           "Orders",
           style: GoogleFonts.playfairDisplay(
-            // ✨ Elegant serif font
             color: kText,
             fontSize: 22,
             fontWeight: FontWeight.w800,
@@ -335,7 +335,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.white],
+            colors: [Color(0xFFF0DDC9), Color(0xFFE6D2BC)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -343,14 +343,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('orders').snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.hasError)
+            if (snapshot.hasError) {
               return const Center(child: Text('Error loading data'));
-            if (!snapshot.hasData)
+            }
+            if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
+            }
 
             final docs = snapshot.data!.docs;
-            if (docs.isEmpty)
+            if (docs.isEmpty) {
               return const Center(child: Text('No orders found'));
+            }
 
             return ListView.builder(
               padding: const EdgeInsets.only(top: 100, bottom: 80),
@@ -365,80 +368,144 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       horizontal: 20.0, vertical: 14),
                   child: GlassCard(
                     child: Padding(
-                      padding: const EdgeInsets.all(18.0),
+                      padding: const EdgeInsets.all(22.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// Top Row: Name + Download PDF
+                          // Top Row: Name + Download Button
                           Row(
                             children: [
-                              Text(
-                                data['name'] ?? 'Unnamed',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                              Expanded(
+                                child: Text(
+                                  data['name'] ?? 'Unnamed',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    color: kAccent,
+                                  ),
                                 ),
                               ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: () => _generateOrderPDFMobile(data),
-                                icon: const Icon(Icons.download,
-                                    color: Colors.black, size: 20),
-                                tooltip: 'Download PDF',
+                              ElevatedButton.icon(
+                                onPressed: () => _generateOrderPDF(data),
+                                icon: const Icon(Icons.download_rounded,
+                                    size: 20, color: Colors.white),
+                                label: const Text(
+                                  "Download",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 6,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 10),
+                                  shadowColor: kAccent.withOpacity(0.3),
+                                ),
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 8),
 
-                          /// Contact Information
-                          Text(data['email'] ?? '',
-                              style: TextStyle(color: kText.withOpacity(0.7))),
-                          Text(data['phone'] ?? '',
-                              style: TextStyle(color: kText.withOpacity(0.7))),
-                          Text(data['address'] ?? '',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: kText.withOpacity(0.7))),
-
-                          /// City and Delivery Speed
-                          const SizedBox(height: 4),
-                          Text("City: ${data['city'] ?? 'Unknown'}",
-                              style: TextStyle(color: kText.withOpacity(0.8))),
+                          // Contact info with subtle styling
                           Text(
-                              "Delivery: ${data['deliverySpeed'] ?? 'Standard'}",
-                              style: TextStyle(color: kText.withOpacity(0.8))),
+                            data['email'] ?? '',
+                            style: TextStyle(
+                                color: kText.withOpacity(0.65),
+                                fontStyle: FontStyle.italic),
+                          ),
+                          Text(
+                            data['phone'] ?? '',
+                            style: TextStyle(color: kText.withOpacity(0.65)),
+                          ),
+                          Text(
+                            data['address'] ?? '',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: kText.withOpacity(0.65)),
+                          ),
 
                           const SizedBox(height: 8),
+
+                          // City & Delivery Speed with labels bolded and colored
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(color: kText.withOpacity(0.8)),
+                              children: [
+                                TextSpan(
+                                  text: "City: ",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: kAccent),
+                                ),
+                                TextSpan(
+                                  text: data['city'] ?? 'Unknown',
+                                ),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(color: kText.withOpacity(0.8)),
+                              children: [
+                                TextSpan(
+                                  text: "Delivery: ",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: kAccent),
+                                ),
+                                TextSpan(
+                                  text: data['deliverySpeed'] ?? 'Standard',
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
                           Divider(color: Colors.grey.shade300),
 
-                          /// Order Date
+                          // Order Date
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Order Date:",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: kText.withOpacity(0.7))),
                               Text(
-                                  data['orderDate']
-                                          ?.toString()
-                                          .split('T')
-                                          .first ??
-                                      'Unknown',
-                                  style:
-                                      const TextStyle(color: Colors.black87)),
+                                "Order Date:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: kAccent.withOpacity(0.7),
+                                ),
+                              ),
+                              Text(
+                                data['orderDate']
+                                        ?.toString()
+                                        .split('T')
+                                        .first ??
+                                    'Unknown',
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ],
                           ),
 
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
 
-                          /// Products Section
-                          Text("Products:",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16)),
-                          const SizedBox(height: 6),
+                          // Products Header
+                          Text(
+                            "Products:",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: kAccent),
+                          ),
+                          const SizedBox(height: 8),
 
+                          // Products List
                           Column(
                             children: products.map((product) {
                               return Padding(
@@ -448,54 +515,68 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(10),
                                       child: Image.network(
                                         product['imageURL'] ?? '',
-                                        width: 45,
-                                        height: 45,
+                                        width: 50,
+                                        height: 50,
                                         fit: BoxFit.cover,
                                         errorBuilder: (_, __, ___) =>
-                                            const Icon(Icons.broken_image),
+                                            const Icon(Icons.broken_image,
+                                                color: Colors.grey),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(product['name'] ?? 'Product',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w500)),
                                           Text(
-                                              "Qty: ${product['quantity'] ?? 1}",
-                                              style: TextStyle(
-                                                  color: Colors.grey[600],
-                                                  fontSize: 12)),
+                                            product['name'] ?? 'Product',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Qty: ${product['quantity'] ?? 1}",
+                                            style: TextStyle(
+                                                color: Colors.grey[700],
+                                                fontSize: 13),
+                                          ),
                                         ],
                                       ),
                                     ),
-                                    Text("\$${product['price']}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: kAccent)),
+                                    Text(
+                                      "\$${product['price']}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green.shade700,
+                                        fontSize: 15,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
                             }).toList(),
                           ),
 
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           Divider(color: Colors.grey.shade300),
 
-                          /// Total Price
+                          // Total Price
                           Align(
                             alignment: Alignment.centerRight,
-                            child: Text("Total: \$${data['totalPrice']}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.green.shade700)),
+                            child: Text(
+                              "Total: \$${data['totalPrice']}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.green.shade800,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -519,13 +600,14 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
+        color: kCardLight,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(2, 2),
+          ),
         ],
       ),
       child: ClipRRect(
@@ -534,9 +616,9 @@ class GlassCard extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white.withOpacity(0.75),
               borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              border: Border.all(color: Colors.white.withOpacity(0.3)),
             ),
             child: child,
           ),
