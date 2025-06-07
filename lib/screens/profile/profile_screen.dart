@@ -1,20 +1,20 @@
-// -------------  profile_screen.dart -------------
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter/material.dart';
-import 'package:messages_apk/screens/profile/profile_details/Privacy_screen.dart';
-import 'package:messages_apk/screens/profile/profile_details/about_screen.dart';
-import 'package:messages_apk/screens/profile/profile_details/rate_app_screen.dart.dart';
-import 'package:messages_apk/screens/profile/profile_details/share_app_screen.dart';
-import 'package:messages_apk/screens/profile/profile_details/terms_conditions_screen.dart';
-import 'package:messages_apk/screens/profile/update_profile_screen.dart';
-import 'package:messages_apk/screens/auth/Welcome_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:toastification/toastification.dart';
 
+import 'package:messages_apk/screens/profile/profile_details/Privacy_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/about_screen.dart';
+import 'package:messages_apk/screens/profile/profile_details/rate_app_screen.dart.dart';
+import 'package:messages_apk/screens/profile/profile_details/terms_conditions_screen.dart';
+import 'package:messages_apk/screens/profile/update_profile_screen.dart';
+import 'package:messages_apk/screens/auth/Welcome_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   static const String screenRoute = 'profile_screen';
-  final User currentUser;
+  final fb_auth.User currentUser;
+
   const ProfileScreen({super.key, required this.currentUser});
 
   @override
@@ -22,8 +22,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late User currentUser;
-  bool showAppBar = false;
+  late fb_auth.User currentUser;
+
+  // Colors used in the UI
+  final Color kBg = const Color(0xFFF0DDC9); // beige background
+  final Color kIcon = const Color(0xFF333333); // dark icons
+  final Color kText = const Color(0xFF1F1F1F); // dark text
 
   @override
   void initState() {
@@ -31,26 +35,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     currentUser = widget.currentUser;
   }
 
-  Future<String?> fetchProfileImage() async {
-    try {
-      final ref =
-          FirebaseStorage.instance.ref('profile_images/${currentUser.uid}.jpg');
-      return await ref.getDownloadURL();
-    } catch (_) {
-      return null;
-    }
-  }
-
-  // ---------- COLORS used in the mock-up ----------
-  final Color kBg = const Color(0xFFF0DDC9); // beige background
-  final Color kIcon = const Color(0xFF333333); // dark icons
-  final Color kText = const Color(0xFF1F1F1F); // dark text
-  // ------------------------------------------------
-
   @override
   Widget build(BuildContext context) {
-    // allow optional AppBar only when pushed from another screen
-    showAppBar = (ModalRoute.of(context)?.settings.arguments as bool?) ?? false;
+    final bool showAppBar =
+        (ModalRoute.of(context)?.settings.arguments as bool?) ?? false;
 
     return Scaffold(
       backgroundColor: kBg,
@@ -76,34 +64,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              // -------- avatar ----------
               const SizedBox(height: 12),
-              CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.white,
-                child: ClipOval(
-                  child: FutureBuilder<String?>(
-                    future: fetchProfileImage(),
-                    builder: (_, snap) {
-                      if (snap.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      final img = snap.data;
-                      return Image(
-                        image: img != null
-                            ? NetworkImage(img)
-                            : const AssetImage('images/download.png')
-                                as ImageProvider,
-                        width: 110,
-                        height: 110,
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ),
-                ),
+
+              // Profile image using StreamBuilder from Firestore 'users' collection
+              StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(currentUser.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey,
+                      child: Icon(Icons.error, size: 60),
+                    );
+                  }
+
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    // Show a loading indicator while waiting for data
+                    return const CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.white,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  final userData =
+                      snapshot.data!.data() as Map<String, dynamic>?;
+
+                  final photoUrl = userData?['photoUrl'] as String?;
+                  final isValidUrl =
+                      photoUrl != null && photoUrl.startsWith('http');
+
+                  return Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Colors.white,
+                        child: ClipOval(
+                          child: isValidUrl
+                              ? Image.network(
+                                  photoUrl!,
+                                  width: 110,
+                                  height: 110,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(
+                                    Icons.broken_image,
+                                    color: Colors.grey.withOpacity(0.6),
+                                    size: 60,
+                                  ),
+                                )
+                              : Image.asset(
+                                  'images/download.png',
+                                  width: 110,
+                                  height: 110,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, UpdateProfileScreen.screenRoute);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: const Icon(
+                              Icons.edit,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
-              const SizedBox(height: 10),
-              // -------- name ----------
+
+              const SizedBox(height: 20),
+
+              // Display user name or fallback
               Text(
                 currentUser.displayName ?? 'User',
                 style: const TextStyle(
@@ -111,9 +162,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fontWeight: FontWeight.w600,
                     color: Colors.black87),
               ),
+
               const SizedBox(height: 25),
 
-              // -------- Edit profile row ----------
               _ProfileRow(
                 title: 'Edit profile',
                 icon: Icons.edit,
@@ -138,6 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.language,
                   iconColor: Colors.orange,
                   onTap: () {}),
+
               _ProfileRow(
                   title: 'About',
                   icon: Icons.help_outline,
@@ -145,6 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: () {
                     Navigator.pushNamed(context, AboutScreen.screenRoute);
                   }),
+
               _ProfileRow(
                   title: 'Terms & Conditions',
                   icon: Icons.info,
@@ -153,6 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Navigator.pushNamed(
                         context, TermsConditionsScreen.screenRoute);
                   }),
+
               _ProfileRow(
                   title: 'Privacy Policy',
                   icon: Icons.lock_outline,
@@ -161,6 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Navigator.pushNamed(
                         context, PrivacyPolicyScreen.screenRoute);
                   }),
+
               _ProfileRow(
                   title: 'Rate This App',
                   icon: Icons.star_border,
@@ -168,6 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: () {
                     Navigator.pushNamed(context, RateAppScreen.screenRoute);
                   }),
+
               _ProfileRow(
                 title: 'Share This App',
                 icon: Icons.share_outlined,
@@ -189,17 +245,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               const SizedBox(height: 12),
-              // -------- Logout -----------
+
               _ProfileRow(
                 title: 'Log-out',
                 icon: Icons.logout,
                 iconColor: Colors.red,
                 onTap: () {
-                  FirebaseAuth.instance.signOut();
+                  fb_auth.FirebaseAuth.instance.signOut();
                   Navigator.pushReplacementNamed(
                       context, WelcomeScreen.screenRoute);
                 },
               ),
+
               const SizedBox(height: 30),
             ],
           ),
@@ -209,7 +266,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// =============== reusable row widget ===============
 class _ProfileRow extends StatelessWidget {
   final String title;
   final IconData icon;

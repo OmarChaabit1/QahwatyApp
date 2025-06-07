@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,11 +21,39 @@ class _signInScreenState extends State<signInScreen> {
   late String email;
   late String password;
   bool showSpinner = false;
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //     if (googleUser == null) {
+  //       // User cancelled
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Google sign-in cancelled by user')),
+  //       );
+  //       return null;
+  //     }
+
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser.authentication;
+
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+
+  //     return await _auth.signInWithCredential(credential);
+  //   } catch (e) {
+  //     print('Google Sign-In failed: $e');
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Google sign-in failed: $e')),
+  //     );
+  //     return null;
+  //   }
+  // }
+
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        // User cancelled
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Google sign-in cancelled by user')),
         );
@@ -39,7 +68,27 @@ class _signInScreenState extends State<signInScreen> {
         idToken: googleAuth.idToken,
       );
 
-      return await _auth.signInWithCredential(credential);
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      // ✅ Save user info to Firestore if it's a new user
+      final user = userCredential.user;
+      if (user != null) {
+        final userDoc =
+            FirebaseFirestore.instance.collection('users').doc(user.uid);
+        final snapshot = await userDoc.get();
+
+        if (!snapshot.exists) {
+          await userDoc.set({
+            'email': user.email,
+            'name': user.displayName ?? '',
+            'photoUrl': user.photoURL ?? '',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        }
+      }
+
+      return userCredential;
     } catch (e) {
       print('Google Sign-In failed: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,17 +110,17 @@ class _signInScreenState extends State<signInScreen> {
               Container(
                 child: Column(
                   children: [
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
                     Image.asset(
                       'images/logo.png', // Logo with coffee cup
                       height: 180,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 0),
                   ],
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -118,7 +167,7 @@ class _signInScreenState extends State<signInScreen> {
                     ),
                     SizedBox(height: 20),
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Image.asset(
                         'images/qahwaty.png', // Logo with coffee cup
                         height: 60,
@@ -155,7 +204,7 @@ class _signInScreenState extends State<signInScreen> {
                             EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TextField(
                       obscureText: true,
                       textAlign: TextAlign.center,
@@ -178,7 +227,7 @@ class _signInScreenState extends State<signInScreen> {
                             EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 0),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -192,7 +241,7 @@ class _signInScreenState extends State<signInScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 0),
                     // ElevatedButton(
                     //   onPressed: () async {
                     //     setState(() => showSpinner = true);
@@ -270,7 +319,7 @@ class _signInScreenState extends State<signInScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     ElevatedButton.icon(
                       icon: Image.asset(
                         'images/google_logo.png', // Add your Google logo asset or use an Icon widget
