@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -9,55 +10,8 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   final Color kBg = const Color(0xFFF0DDC9);
-
   final Color kText = const Color(0xFF333333);
-
   final Color kAccent = const Color(0xFF71503C);
-
-  final List<Map<String, dynamic>> notifications = [
-    {
-      'avatar': 'images/user1.jpg',
-      'title': 'Product Support',
-      'subtitle': 'new product added',
-      'time': '3m ago'
-    },
-    {
-      'avatar': 'images/user2.jpg',
-      'title': 'Payment Support',
-      'subtitle': 'pending payment',
-      'time': '5m ago'
-    },
-    {
-      'avatar': 'images/user1.jpg',
-      'title': 'Product Support',
-      'subtitle': 'product price changed',
-      'time': '2h ago'
-    },
-    {
-      'avatar': 'images/user3.jpg',
-      'title': 'Profile Support',
-      'subtitle': 'enter your location',
-      'time': '3h ago'
-    },
-    {
-      'avatar': 'images/user4.jpg',
-      'title': 'Order Support',
-      'subtitle': 'your order in way',
-      'time': '5h ago'
-    },
-    {
-      'avatar': 'images/user4.jpg',
-      'title': 'Order Support',
-      'subtitle': 'Your Order Delivered',
-      'time': '7h ago'
-    },
-    {
-      'avatar': 'images/user5.jpg',
-      'title': 'Profile Support',
-      'subtitle': 'Saved your photo.',
-      'time': 'Yesterday'
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -90,17 +44,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            // Top Controls: Mark All Read / Sort By
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text(
-                    'Mark All Read',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500, color: Colors.black87),
-                  ),
+                  Text('Mark All Read',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500, color: Colors.black87)),
                   Row(
                     children: [
                       Text('Sort By Time',
@@ -113,41 +64,66 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ),
             ),
             Expanded(
-              child: ListView.separated(
-                itemCount: notifications.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 10),
-                itemBuilder: (context, index) {
-                  final n = notifications[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 25,
-                        backgroundImage: AssetImage(n['avatar']),
-                      ),
-                      title: Text(
-                        n['title'],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 15),
-                      ),
-                      subtitle: Text(n['subtitle']),
-                      trailing: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Icon(Icons.more_horiz, color: Colors.grey),
-                          const SizedBox(height: 4),
-                          Text(
-                            n['time'],
-                            style: TextStyle(
-                                fontSize: 12, color: Colors.grey.shade600),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('notifications')
+                    .orderBy('timestamp', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text("No notifications found."));
+                  }
+
+                  final docs = snapshot.data!.docs;
+
+                  return ListView.separated(
+                    itemCount: docs.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      final doc = docs[index];
+                      final data = doc.data() as Map<String, dynamic>;
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage: data['avatarUrl'] != null
+                                ? NetworkImage(data['avatarUrl'])
+                                : const AssetImage('images/default_user.png')
+                                    as ImageProvider,
                           ),
-                        ],
-                      ),
-                    ),
+                          title: Text(
+                            data['title'] ?? 'No Title',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                          subtitle: Text(data['subtitle'] ?? ''),
+                          trailing: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.more_horiz, color: Colors.grey),
+                              const SizedBox(height: 4),
+                              Text(
+                                _formatTimestamp(data['timestamp']),
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey.shade600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -155,7 +131,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  String _formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return '';
+    final dateTime = timestamp.toDate();
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h ago';
+    } else {
+      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    }
   }
 }

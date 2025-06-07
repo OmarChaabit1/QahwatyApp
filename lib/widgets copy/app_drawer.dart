@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:messages_apk/screens/auth/Welcome_screen.dart';
@@ -11,7 +12,7 @@ class AppDrawer extends StatelessWidget {
 
   final User? currentUser = FirebaseAuth.instance.currentUser;
 
-  Widget buildSectionTitle(String title, BuildContext context) {
+  Widget _buildSectionTitle(String title, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Text(
@@ -25,8 +26,12 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildListTile(
-      BuildContext context, String title, IconData icon, VoidCallback onTap) {
+  Widget _buildListTile({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -45,75 +50,130 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
+  Widget _buildUserHeader(BuildContext context) {
+    if (currentUser == null) return const SizedBox.shrink();
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        String? photoUrl;
+        bool isValidUrl = false;
+
+        if (snapshot.hasData && snapshot.data!.exists) {
+          final data = snapshot.data!.data() as Map<String, dynamic>?;
+          photoUrl = data?['photoUrl'] as String?;
+          isValidUrl = photoUrl != null && photoUrl.startsWith('http');
+        }
+
+        return UserAccountsDrawerHeader(
+          accountName: Text(
+            currentUser?.displayName ?? 'Full Name',
+            style: const TextStyle(
+              fontFamily: 'ElMessiri',
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF71503C),
+            ),
+          ),
+          accountEmail: Text(
+            currentUser?.email ?? 'Email',
+            style: const TextStyle(
+              fontFamily: 'ElMessiri',
+              color: Color(0xFF333333),
+              fontSize: 16,
+            ),
+          ),
+          currentAccountPicture: CircleAvatar(
+            radius: 60,
+            backgroundColor: Colors.white,
+            child: ClipOval(
+              child: isValidUrl
+                  ? Image.network(
+                      photoUrl!,
+                      width: 110,
+                      height: 110,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.broken_image,
+                        color: Colors.grey.withOpacity(0.6),
+                        size: 60,
+                      ),
+                    )
+                  : Image.asset(
+                      'images/download.png',
+                      width: 110,
+                      height: 110,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+          decoration: const BoxDecoration(color: Color(0xFFF0DDC9)),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: SafeArea(
         child: Column(
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(
-                currentUser?.displayName ?? 'Full Name',
-                style: const TextStyle(
-                  fontFamily: 'ElMessiri',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF71503C),
-                ),
-              ),
-              accountEmail: Text(
-                currentUser?.email ?? 'Email',
-                style: const TextStyle(
-                  fontFamily: 'ElMessiri',
-                  color: Color(0xFF333333),
-                  fontSize: 16,
-                ),
-              ),
-              currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-                  child: Image.asset(
-                    'images/download.png',
-                    width: 90,
-                    height: 90,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF0DDC9),
-              ),
+            _buildUserHeader(context),
+            _buildSectionTitle('Navigation', context),
+            _buildListTile(
+              context: context,
+              title: 'Home',
+              icon: Icons.home,
+              onTap: () => Navigator.of(context)
+                  .pushReplacementNamed(TabsScreen.screenRoute),
             ),
-            buildSectionTitle('Navigation', context),
-            buildListTile(context, 'Home', Icons.home, () {
-              Navigator.of(context)
-                  .pushReplacementNamed(TabsScreen.screenRoute);
-            }),
-            buildListTile(context, 'Dashboard', Icons.dashboard, () {
-              Navigator.of(context)
-                  .pushReplacementNamed(TabsScreen.screenRoute);
-            }),
-            buildListTile(context, 'Notifications', Icons.notifications, () {
-              Navigator.of(context)
-                  .pushReplacementNamed(NotificationScreen.screenRoute);
-            }),
+            _buildListTile(
+              context: context,
+              title: 'Dashboard',
+              icon: Icons.dashboard,
+              onTap: () => Navigator.of(context)
+                  .pushReplacementNamed(TabsScreen.screenRoute),
+            ),
+            _buildListTile(
+              context: context,
+              title: 'Notifications',
+              icon: Icons.notifications,
+              onTap: () => Navigator.of(context)
+                  .pushReplacementNamed(NotificationScreen.screenRoute),
+            ),
             const Divider(),
-            buildSectionTitle('Account', context),
-            buildListTile(context, 'Profile', Icons.person, () {
-              Navigator.pushNamed(
+            _buildSectionTitle('Account', context),
+            _buildListTile(
+              context: context,
+              title: 'Profile',
+              icon: Icons.person,
+              onTap: () => Navigator.pushNamed(
                 context,
                 ProfileScreen.screenRoute,
                 arguments: true,
-              );
-            }),
-            buildListTile(context, 'Help', Icons.help_outline, () {
-              Navigator.of(context)
-                  .pushReplacementNamed(HelpScreen.screenRoute);
-            }),
-            buildListTile(context, 'Log out', Icons.exit_to_app, () {
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context)
-                  .pushReplacementNamed(WelcomeScreen.screenRoute);
-            }),
+              ),
+            ),
+            _buildListTile(
+              context: context,
+              title: 'Help',
+              icon: Icons.help_outline,
+              onTap: () => Navigator.of(context)
+                  .pushReplacementNamed(HelpScreen.screenRoute),
+            ),
+            _buildListTile(
+              context: context,
+              title: 'Log out',
+              icon: Icons.exit_to_app,
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context)
+                    .pushReplacementNamed(WelcomeScreen.screenRoute);
+              },
+            ),
           ],
         ),
       ),
